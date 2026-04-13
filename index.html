@@ -199,7 +199,8 @@
       z-index: 10;
       flex-shrink: 0;
       overflow: hidden;
-      transition: padding 0.25s ease;
+      transition: padding 0.2s ease, min-height 0.2s ease;
+      min-height: 62px;
     }
 
     .header-left {
@@ -249,30 +250,31 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      transition: background-color 0.2s ease, transform 0.2s ease;
+      transition: background-color 0.2s ease, width 0.2s ease, height 0.2s ease, font-size 0.2s ease;
     }
 
     .header-toggle:hover {
       background: rgba(255,255,255,0.28);
     }
 
+    /* --- MUCH SMALLER COLLAPSED STATE --- */
     .header-bar.collapsed {
-      padding: 6px 20px;
+      padding: 2px 8px;
+      min-height: 20px;
+      justify-content: flex-end;
+      gap: 0;
     }
 
-    .header-bar.collapsed .arrow-down {
+    .header-bar.collapsed .header-left {
       display: none;
     }
 
-    .header-bar.collapsed .header-extra {
-      display: none;
-    }
-
-    .header-bar.collapsed .header-text {
-      font-size: 14px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .header-bar.collapsed .header-toggle {
+      width: 22px;
+      height: 16px;
+      font-size: 11px;
+      border-radius: 4px;
+      padding: 0;
     }
 
     /* --- IFRAME --- */
@@ -332,18 +334,18 @@
         <div class="dropdown-divider"></div>
 
         <div class="dropdown-header">Departments</div>
-        <a href="INSERT_DEPARTMENT_LINK_1_HERE">Benefits</a>
-        <a href="INSERT_DEPARTMENT_LINK_2_HERE">Compensation</a>
-        <a href="INSERT_DEPARTMENT_LINK_3_HERE">DE&I</a>
-        <a href="INSERT_DEPARTMENT_LINK_4_HERE">ELO</a>
-        <a href="INSERT_DEPARTMENT_LINK_5_HERE">Employee Experience</a>
-        <a href="INSERT_DEPARTMENT_LINK_6_HERE">HRBP</a>
-        <a href="INSERT_DEPARTMENT_LINK_7_HERE">HRCM</a>
-        <a href="INSERT_DEPARTMENT_LINK_8_HERE">HRS</a>
-        <a href="INSERT_DEPARTMENT_LINK_9_HERE">HRSS</a>
-        <a href="INSERT_DEPARTMENT_LINK_10_HERE">Labor Relations</a>
-        <a href="INSERT_DEPARTMENT_LINK_11_HERE">Talent Acquisition</a>
-        <a href="INSERT_DEPARTMENT_LINK_12_HERE">Talent Development</a>
+        <a href="INSERT_DEPARTMENT_LINK_1_HERE">Department Link 1</a>
+        <a href="INSERT_DEPARTMENT_LINK_2_HERE">Department Link 2</a>
+        <a href="INSERT_DEPARTMENT_LINK_3_HERE">Department Link 3</a>
+        <a href="INSERT_DEPARTMENT_LINK_4_HERE">Department Link 4</a>
+        <a href="INSERT_DEPARTMENT_LINK_5_HERE">Department Link 5</a>
+        <a href="INSERT_DEPARTMENT_LINK_6_HERE">Department Link 6</a>
+        <a href="INSERT_DEPARTMENT_LINK_7_HERE">Department Link 7</a>
+        <a href="INSERT_DEPARTMENT_LINK_8_HERE">Department Link 8</a>
+        <a href="INSERT_DEPARTMENT_LINK_9_HERE">Department Link 9</a>
+        <a href="INSERT_DEPARTMENT_LINK_10_HERE">Department Link 10</a>
+        <a href="INSERT_DEPARTMENT_LINK_11_HERE">Department Link 11</a>
+        <a href="INSERT_DEPARTMENT_LINK_12_HERE">Department Link 12</a>
 
         <div class="dropdown-divider"></div>
 
