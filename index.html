@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>INSERT TITLE HERE</title>
+  <title>Benefits</title>
   <style>
     body, html {
       margin: 0;
@@ -10,11 +10,6 @@
       height: 100%;
       overflow: hidden;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      display: flex;
-      flex-direction: column;
     }
 
     /* --- BLUE NAV BAR --- */
@@ -29,7 +24,6 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       position: relative;
       z-index: 20;
-      flex-shrink: 0;
     }
 
     .nav-home {
@@ -49,31 +43,9 @@
     }
 
     .nav-home svg {
-      width: 26px;
-      height: 26px;
+      width: 32px;
+      height: 32px;
       fill: white;
-      display: block;
-    }
-
-    .nav-image-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 42px;
-      padding: 4px 8px;
-      border-radius: 8px;
-      text-decoration: none;
-      transition: background-color 0.2s ease;
-      flex-shrink: 0;
-    }
-
-    .nav-image-link:hover {
-      background-color: rgba(255,255,255,0.14);
-    }
-
-    .nav-image {
-      height: 36px;
-      width: auto;
       display: block;
     }
 
@@ -180,106 +152,14 @@
     }
 
     .swgas-logo {
-      height: 52px;
+      height: 60px;
       width: auto;
       display: block;
     }
 
-    /* --- RED WARNING BAR --- */
-    .header-bar {
-      background-color: #d9534f;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 12px 20px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.15);
-      position: relative;
-      z-index: 10;
-      flex-shrink: 0;
-      overflow: hidden;
-      transition: padding 0.2s ease;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      min-width: 0;
-    }
-
-    .arrow-down {
-      font-size: 24px;
-      animation: bounce 2s infinite;
-      flex-shrink: 0;
-    }
-
-    @keyframes bounce {
-      0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-      40% { transform: translateY(5px); }
-      60% { transform: translateY(3px); }
-    }
-
-    .header-text {
-      font-size: 15px;
-      line-height: 1.4;
-      white-space: normal;
-    }
-
-    .header-text strong {
-      font-weight: 700;
-    }
-
-    .header-extra {
-      display: inline;
-    }
-
-    .header-toggle {
-      background: rgba(255,255,255,0.18);
-      color: white;
-      border: 1px solid rgba(255,255,255,0.35);
-      border-radius: 6px;
-      width: 34px;
-      height: 34px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: background-color 0.2s ease, width 0.2s ease, height 0.2s ease, font-size 0.2s ease;
-    }
-
-    .header-toggle:hover {
-      background: rgba(255,255,255,0.28);
-    }
-
-    /* --- MUCH SMALLER COLLAPSED STATE --- */
-    .header-bar.collapsed {
-      padding: 2px 8px;
-      justify-content: flex-end;
-      gap: 0;
-    }
-
-    .header-bar.collapsed .header-left {
-      display: none;
-    }
-
-    .header-bar.collapsed .header-toggle {
-      width: 22px;
-      height: 16px;
-      font-size: 11px;
-      border-radius: 4px;
-      padding: 0;
-    }
-
-    /* --- IFRAME --- */
     iframe {
       width: 100%;
-      flex: 1;
-      min-height: 0;
+      height: calc(100% - 56px);
       border: none;
       display: block;
     }
@@ -288,21 +168,21 @@
 <body>
 
   <div class="top-nav">
-    <a class="nav-home" href="INSERT_HOME_LINK_HERE" title="Home">
+    <a class="nav-home" href="https://app.smartsheet.com/b/publish?EQBCT=13971636efc64535bca834c5bd2b499a" title="Home">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <path d="M12 3.2 3 10.4v10.4c0 .6.4 1 1 1h5.5c.6 0 1-.4 1-1v-5.2h3v5.2c0 .6.4 1 1 1H20c.6 0 1-.4 1-1V10.4l-9-7.2z"/>
       </svg>
     </a>
 
-    <a class="nav-image-link" href="INSERT_LEFT_IMAGE_LINK_HERE" title="Secondary Link">
-      <img src="INSERT_LEFT_IMAGE_SRC_HERE" alt="Secondary Navigation Image" class="nav-image">
+    <a class="nav-item" href="https://app.smartsheet.com/b/publish?EQBCT=3d336acb529a47e1bd3701ecd71b22a9">
+      (Department Name) Main Initiatives
     </a>
 
-    <a class="nav-item" href="INSERT_ALL_DEPARTMENT_PROJECTS_VIEW_LINK_HERE">
-      All (Department Name Projects) View (View Only)
+    <a class="nav-item" href="https://app.smartsheet.com/b/publish?EQBCT=bbb5a5a6a2d9411990d7442a2dfec3ae">
+      All (Department Name) Projects (View Only)
     </a>
 
-    <a class="nav-item" href="INSERT_ALL_HR_PERSONAL_TASKS_LINK_HERE">
+    <a class="nav-item" href="https://app.smartsheet.com/b/publish?EQBCT=411b8b11b68440d29c2d27c40b0397ed">
       All HR Personal Tasks (View Only)
     </a>
 
@@ -324,31 +204,36 @@
       </div>
       <div class="dropdown-menu">
         <div class="dropdown-header">HRLT</div>
-        <a href="INSERT_HRLT_LINK_1_HERE">Albert Taylor</a>
-        <a href="INSERT_HRLT_LINK_2_HERE">Gail Carmona</a>
-        <a href="INSERT_HRLT_LINK_3_HERE">Mike Bryant</a>
-        <a href="INSERT_HRLT_LINK_4_HERE">Courtney Moore</a>
+        <a href="https://swgashr.github.io/HRCM/HR">Albert Taylor</a>
+        <a href="https://swgashr.github.io/HR-Operations">Gail Carmona</a>
+        <a href="https://swgashr.github.io/HR-Compensation-Benefits">Mike Bryant</a>
+        <a href="https://swgashr.github.io/HR-Employee-Experience-TA">Courtney Moore</a>
 
         <div class="dropdown-divider"></div>
 
         <div class="dropdown-header">Departments</div>
-        <a href="INSERT_DEPARTMENT_LINK_1_HERE">Department Link 1</a>
-        <a href="INSERT_DEPARTMENT_LINK_2_HERE">Department Link 2</a>
-        <a href="INSERT_DEPARTMENT_LINK_3_HERE">Department Link 3</a>
-        <a href="INSERT_DEPARTMENT_LINK_4_HERE">Department Link 4</a>
-        <a href="INSERT_DEPARTMENT_LINK_5_HERE">Department Link 5</a>
-        <a href="INSERT_DEPARTMENT_LINK_6_HERE">Department Link 6</a>
-        <a href="INSERT_DEPARTMENT_LINK_7_HERE">Department Link 7</a>
-        <a href="INSERT_DEPARTMENT_LINK_8_HERE">Department Link 8</a>
-        <a href="INSERT_DEPARTMENT_LINK_9_HERE">Department Link 9</a>
-        <a href="INSERT_DEPARTMENT_LINK_10_HERE">Department Link 10</a>
-        <a href="INSERT_DEPARTMENT_LINK_11_HERE">Department Link 11</a>
-        <a href="INSERT_DEPARTMENT_LINK_12_HERE">Department Link 12</a>
+        <a href="https://swgashr.github.io/Benefits">Benefits</a>
+        <a href="https://swgashr.github.io/Compensation">Compensation</a>
+        <a href="https://swgashr.github.io/DEI">DE&I</a>
+        <a href="https://swgashr.github.io/ELO">ELO</a>
+        <a href="https://swgashr.github.io/Employee-Experience">Employee Experience</a>
+        <a href="https://swgashr.github.io/HRBP">HRBP</a>
+        <a href="https://swgashr.github.io/HRCM">HRCM</a>
+        <a href="https://swgashr.github.io/HRS">HRS</a>
+        <a href="https://swgashr.github.io/HRSS">HRSS</a>
+        <a href="https://swgashr.github.io/Labor-Relations">Labor Relations</a>
+        <a href="https://swgashr.github.io/Talent-Acquisition">Talent Acquisition</a>
+        <a href="https://swgashr.github.io/Talent-Development">Talent Development</a>
+
+        <div class="dropdown-divider"></div>
+
+        <div class="dropdown-header">Raid Log</div>
+        <a href="https://swgashr.github.io/Raid-Log">Raid Log</a>
 
         <div class="dropdown-divider"></div>
 
         <div class="dropdown-header">KPIs</div>
-        <a href="INSERT_KPI_LINK_HERE">KPI Dashboard</a>
+        <a href="https://swgashr.github.io/KPIS">KPI Dashboard</a>
       </div>
     </div>
 
@@ -357,62 +242,25 @@
         Support <span class="caret">▼</span>
       </div>
       <div class="dropdown-menu">
-        <a href="INSERT_SUPPORT_EMBED_HTML_1_HERE" target="_blank" rel="noopener noreferrer">Support Link 1</a>
-        <a href="INSERT_SUPPORT_EMBED_HTML_2_HERE" target="_blank" rel="noopener noreferrer">Support Link 2</a>
-        <a href="INSERT_SUPPORT_LINK_3_HERE">Support Link 3</a>
-        <a href="INSERT_SUPPORT_LINK_4_HERE">Support Link 4</a>
+        <a href="https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7" target="_blank" rel="noopener noreferrer">Smartsheet Project Creation Request</a>
+        <a href="https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593" target="_blank" rel="noopener noreferrer">Smartsheet Support</a>
+        <a href="INSERT_SUPPORT_LINK_3_HERE">Job Aid (MGR)</a>
+        <a href="INSERT_SUPPORT_LINK_4_HERE">Job Aid (DIR)</a>
       </div>
     </div>
 
     <div class="nav-spacer"></div>
 
     <a class="swgas-logo-link"
-       href="https://swgas.sharepoint.com/sites/communications"
+       href="https://swgas.sharepoint.com/sites/Benefits"
        target="_blank"
        rel="noopener noreferrer"
        title="Southwest Gas SharePoint">
-      <img src="images/swg-logo-bw.jpg" alt="Southwest Gas" class="swgas-logo">
+      <img src="swgas.png" alt="Southwest Gas" class="swgas-logo">
     </a>
   </div>
 
-  <div class="header-bar" id="warningBar">
-    <div class="header-left">
-      <div class="arrow-down">⬇️</div>
-      <div class="header-text">
-        <strong>Don't lose your work!</strong>
-        <span class="header-extra"> Click the Save icon just below the project title on the far left before leaving this sheet.</span>
-      </div>
-    </div>
-
-    <button class="header-toggle"
-            id="warningToggle"
-            type="button"
-            aria-expanded="true"
-            aria-label="Collapse warning bar"
-            onclick="toggleWarningBar()">
-      ▲
-    </button>
-  </div>
-
-  <iframe src="INSERT_SHEET_LINK_HERE" allowfullscreen></iframe>
-
-  <script>
-    function toggleWarningBar() {
-      const warningBar = document.getElementById('warningBar');
-      const toggleButton = document.getElementById('warningToggle');
-      const isCollapsed = warningBar.classList.toggle('collapsed');
-
-      if (isCollapsed) {
-        toggleButton.textContent = '▼';
-        toggleButton.setAttribute('aria-expanded', 'false');
-        toggleButton.setAttribute('aria-label', 'Expand warning bar');
-      } else {
-        toggleButton.textContent = '▲';
-        toggleButton.setAttribute('aria-expanded', 'true');
-        toggleButton.setAttribute('aria-label', 'Collapse warning bar');
-      }
-    }
-  </script>
+  <iframe src="https://app.smartsheet.com/b/publish?EQBCT=13971636efc64535bca834c5bd2b499a" allowfullscreen></iframe>
 
 </body>
 </html>
