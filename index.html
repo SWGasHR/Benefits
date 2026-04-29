@@ -152,6 +152,83 @@
       flex: 1;
     }
 
+    /* --- TOP NAV DASHBOARD REFRESH POP-UP --- */
+    .nav-reminder-slot {
+      flex: 1;
+      min-width: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 18px;
+      box-sizing: border-box;
+    }
+
+    .nav-refresh-popover {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: min(100%, 360px);
+      min-height: 34px;
+      box-sizing: border-box;
+      background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
+      color: #252763;
+      border: 1px solid rgba(255,255,255,0.72);
+      border-radius: 999px;
+      padding: 8px 38px 8px 18px;
+      font-size: 12.5px;
+      line-height: 1.25;
+      font-weight: 600;
+      text-align: center;
+      letter-spacing: 0.1px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.16);
+      flex-shrink: 1;
+    }
+
+    .nav-refresh-popover.hidden {
+      display: none;
+    }
+
+    .nav-refresh-text {
+      display: block;
+      width: 100%;
+      text-align: center;
+    }
+
+    .nav-refresh-popover strong {
+      font-weight: 800;
+    }
+
+    .nav-refresh-close {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      width: 21px;
+      height: 21px;
+      border: 2px solid #ffffff;
+      border-radius: 50%;
+      background: #4f7fd8;
+      color: white;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.22);
+      font-family: inherit;
+      transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .nav-refresh-close:hover,
+    .nav-refresh-close:focus {
+      background: #2f5fb8;
+      transform: translateY(-1px);
+      box-shadow: 0 5px 10px rgba(0,0,0,0.25);
+      outline: none;
+    }
+
     .swgas-logo-link {
       display: flex;
       align-items: center;
@@ -319,6 +396,8 @@
     .view-only-note strong {
       font-weight: 700;
     }
+
+
 
     /* --- IFRAME AREA --- */
     .iframe-wrap {
@@ -644,7 +723,17 @@
       </div>
     </div>
 
-    <div class="nav-spacer"></div>
+    <div class="nav-reminder-slot">
+      <div class="nav-refresh-popover hidden" id="refreshReminder" role="status" aria-live="polite">
+        <button class="nav-refresh-close"
+                id="refreshReminderClose"
+                type="button"
+                aria-label="Dismiss dashboard refresh reminder">
+          ×
+        </button>
+        <span class="nav-refresh-text"><strong>Reminder:</strong> This Dashboard updates every 24 hours.</span>
+      </div>
+    </div>
 
     <a class="swgas-logo-link"
        href="https://swgas.sharepoint.com/sites/Benefits"
@@ -678,6 +767,7 @@
     <strong>View-only page.</strong>
     To make updates, open the specific project sheet from the Projects menu.
   </div>
+
 
   <div class="iframe-wrap">
     <iframe id="contentFrame"
@@ -763,25 +853,29 @@
         home: {
           label: "Home",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=13971636efc64535bca834c5bd2b499a",
-          viewOnlyNote: false
+          viewOnlyNote: false,
+          refreshNote: true
         },
 
         mainInitiatives: {
           label: "Benefits Main Initiatives",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=3d336acb529a47e1bd3701ecd71b22a9",
-          viewOnlyNote: false
+          viewOnlyNote: false,
+          refreshNote: true
         },
 
         allDepartmentProjects: {
           label: "All Benefits Projects (View Only)",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=bbb5a5a6a2d9411990d7442a2dfec3ae",
-          viewOnlyNote: true
+          viewOnlyNote: true,
+          refreshNote: false
         },
 
         allHrPersonalTasks: {
           label: "All HR Personal Tasks (View Only)",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=411b8b11b68440d29c2d27c40b0397ed",
-          viewOnlyNote: true
+          viewOnlyNote: true,
+          refreshNote: false
         }
       },
 
@@ -813,6 +907,8 @@
     const loadingMessage = document.getElementById("loadingMessage");
     const placeholderMessage = document.getElementById("placeholderMessage");
     const viewOnlyNote = document.getElementById("viewOnlyNote");
+    const refreshReminder = document.getElementById("refreshReminder");
+    const refreshReminderClose = document.getElementById("refreshReminderClose");
     const projectLinksContainer = document.getElementById("projectLinksContainer");
     const projectSearch = document.getElementById("projectSearch");
     const noProjectResults = document.getElementById("noProjectResults");
@@ -822,6 +918,7 @@
     let projectModeActive = false;
     let pendingNavigationAction = null;
     let projectWarningCollapsedByUser = false;
+    let refreshReminderDismissed = false;
     let currentViewKey = null;
     let currentRouteHash = "";
     let suppressHashChange = false;
@@ -1031,6 +1128,14 @@
       }
     }
 
+    function setRefreshNote(shouldShow) {
+      if (shouldShow && !refreshReminderDismissed) {
+        refreshReminder.classList.remove("hidden");
+      } else {
+        refreshReminder.classList.add("hidden");
+      }
+    }
+
     function setActiveLink(activeLink, isProject) {
       document.querySelectorAll(".portal-view-link, .project-view-link").forEach(function(link) {
         link.classList.remove("active");
@@ -1091,6 +1196,7 @@
       const clickedLink = options.clickedLink;
       const viewKey = options.viewKey;
       const shouldShowViewOnlyNote = options.viewOnlyNote;
+      const shouldShowRefreshNote = options.refreshNote;
 
       if (isPlaceholderLink(newEmbedLink)) {
         showPlaceholderMessage();
@@ -1106,9 +1212,11 @@
       if (shouldShowProjectWarning) {
         showWarningBar();
         setViewOnlyNote(false);
+        setRefreshNote(false);
       } else {
         hideWarningBar();
         setViewOnlyNote(shouldShowViewOnlyNote);
+        setRefreshNote(shouldShowRefreshNote);
       }
 
       setActiveLink(clickedLink, shouldShowProjectWarning);
@@ -1192,7 +1300,8 @@
           isProject: true,
           clickedLink: clickedLink,
           viewKey: routeKey(route),
-          viewOnlyNote: false
+          viewOnlyNote: false,
+          refreshNote: false
         });
       } else {
         const view = PORTAL_CONFIG.views[route.id];
@@ -1208,7 +1317,8 @@
           isProject: false,
           clickedLink: clickedLink,
           viewKey: routeKey(route),
-          viewOnlyNote: view.viewOnlyNote
+          viewOnlyNote: view.viewOnlyNote,
+          refreshNote: view.refreshNote
         });
       }
 
@@ -1440,6 +1550,12 @@
           firstElement.focus();
         }
       }
+    });
+
+    refreshReminderClose.addEventListener("click", function(event) {
+      event.stopPropagation();
+      refreshReminderDismissed = true;
+      setRefreshNote(false);
     });
 
     projectSearch.addEventListener("input", filterProjectLinks);
