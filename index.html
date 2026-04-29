@@ -62,7 +62,7 @@
       color: white;
       text-decoration: none;
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       padding: 10px 14px;
       border-radius: 6px;
       display: flex;
@@ -152,7 +152,7 @@
       flex: 1;
     }
 
-    /* --- TOP NAV DASHBOARD REFRESH POP-UP --- */
+    /* --- TOP NAV MESSAGE POP-UP --- */
     .nav-reminder-slot {
       flex: 1;
       min-width: 260px;
@@ -168,7 +168,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: min(100%, 360px);
+      width: min(100%, 390px);
       min-height: 34px;
       box-sizing: border-box;
       background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
@@ -176,9 +176,9 @@
       border: 1px solid rgba(255,255,255,0.72);
       border-radius: 999px;
       padding: 8px 38px 8px 18px;
-      font-size: 12.5px;
-      line-height: 1.25;
-      font-weight: 600;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 700;
       text-align: center;
       letter-spacing: 0.1px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.16);
@@ -728,10 +728,10 @@
         <button class="nav-refresh-close"
                 id="refreshReminderClose"
                 type="button"
-                aria-label="Dismiss dashboard refresh reminder">
+                aria-label="Dismiss navigation reminder">
           ×
         </button>
-        <span class="nav-refresh-text"><strong>Reminder:</strong> This Dashboard updates every 24 hours.</span>
+        <span class="nav-refresh-text">This Dashboard updates every 24 hours.</span>
       </div>
     </div>
 
@@ -908,6 +908,7 @@
     const placeholderMessage = document.getElementById("placeholderMessage");
     const viewOnlyNote = document.getElementById("viewOnlyNote");
     const refreshReminder = document.getElementById("refreshReminder");
+    const refreshReminderText = refreshReminder ? refreshReminder.querySelector(".nav-refresh-text") : null;
     const refreshReminderClose = document.getElementById("refreshReminderClose");
     const projectLinksContainer = document.getElementById("projectLinksContainer");
     const projectSearch = document.getElementById("projectSearch");
@@ -918,7 +919,7 @@
     let projectModeActive = false;
     let pendingNavigationAction = null;
     let projectWarningCollapsedByUser = false;
-    let refreshReminderDismissed = false;
+    let navPopupDismissedRouteKey = null;
     let currentViewKey = null;
     let currentRouteHash = "";
     let suppressHashChange = false;
@@ -1121,19 +1122,31 @@
     });
 
     function setViewOnlyNote(shouldShow) {
-      if (shouldShow) {
-        viewOnlyNote.classList.remove("hidden");
-      } else {
-        viewOnlyNote.classList.add("hidden");
-      }
+      viewOnlyNote.classList.add("hidden");
     }
 
-    function setRefreshNote(shouldShow) {
-      if (shouldShow && !refreshReminderDismissed) {
+    function setNavPopup(shouldShow, message) {
+      if (!refreshReminder) {
+        return;
+      }
+
+      if (message && refreshReminderText) {
+        refreshReminderText.textContent = message;
+      }
+
+      if (shouldShow && navPopupDismissedRouteKey !== currentViewKey) {
         refreshReminder.classList.remove("hidden");
       } else {
         refreshReminder.classList.add("hidden");
       }
+    }
+
+    function setRefreshNote(shouldShow) {
+      setNavPopup(shouldShow, "This Dashboard updates every 24 hours.");
+    }
+
+    function setViewOnlyReminder(shouldShow) {
+      setNavPopup(shouldShow, "View-only: Open the project sheet from Projects to make updates.");
     }
 
     function setActiveLink(activeLink, isProject) {
@@ -1212,11 +1225,16 @@
       if (shouldShowProjectWarning) {
         showWarningBar();
         setViewOnlyNote(false);
-        setRefreshNote(false);
+        setNavPopup(false);
       } else {
         hideWarningBar();
-        setViewOnlyNote(shouldShowViewOnlyNote);
-        setRefreshNote(shouldShowRefreshNote);
+        setViewOnlyNote(false);
+
+        if (shouldShowViewOnlyNote) {
+          setViewOnlyReminder(true);
+        } else {
+          setRefreshNote(shouldShowRefreshNote);
+        }
       }
 
       setActiveLink(clickedLink, shouldShowProjectWarning);
@@ -1553,9 +1571,10 @@
     });
 
     refreshReminderClose.addEventListener("click", function(event) {
+      event.preventDefault();
       event.stopPropagation();
-      refreshReminderDismissed = true;
-      setRefreshNote(false);
+      navPopupDismissedRouteKey = currentViewKey;
+      setNavPopup(false);
     });
 
     projectSearch.addEventListener("input", filterProjectLinks);
