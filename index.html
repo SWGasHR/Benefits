@@ -1272,6 +1272,17 @@
       }, remainingVisibleTime);
     }
 
+    function hideLoadingMessageImmediately() {
+      clearTimeout(loadingShowTimer);
+      clearTimeout(loadingHideTimer);
+      clearTimeout(loadingFadeTimer);
+
+      loadingMessage.classList.add("hidden");
+      loadingMessage.classList.remove("visible");
+      loadingMessage.classList.remove("fading");
+      loadingVisibleAt = 0;
+    }
+
     function scheduleLoadingMessageHide() {
       clearTimeout(loadingHideTimer);
 
@@ -1402,7 +1413,7 @@
       }
 
       if (iframeRecord.isLoaded) {
-        hideLoadingMessage();
+        hideLoadingMessageImmediately();
       } else {
         showLoadingMessage();
       }
