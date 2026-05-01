@@ -406,11 +406,32 @@
       min-height: 0;
     }
 
-    iframe {
+    .iframe-pool {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: white;
+    }
+
+    .content-frame {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       border: none;
       display: block;
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+      background: white;
+    }
+
+    .content-frame.active {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      z-index: 1;
     }
 
     /* --- SMARTER LOADING MESSAGE --- */
@@ -770,10 +791,7 @@
 
 
   <div class="iframe-wrap">
-    <iframe id="contentFrame"
-            src=""
-            allowfullscreen>
-    </iframe>
+    <div class="iframe-pool" id="iframePool"></div>
 
     <div class="loading-message hidden" id="loadingMessage">
       <div class="loading-content">
@@ -898,7 +916,7 @@
        You should not need to edit below this line.
        ========================================================== */
 
-    const contentFrame = document.getElementById("contentFrame");
+    const iframePool = document.getElementById("iframePool");
     const warningBar = document.getElementById("warningBar");
     const warningToggle = document.getElementById("warningToggle");
     const saveModal = document.getElementById("saveModal");
@@ -924,6 +942,8 @@
     let currentRouteHash = "";
     let suppressHashChange = false;
     let lastFocusedElementBeforeModal = null;
+    let iframeRegistry = {};
+    let preloadStarted = false;
 
     let loadingShowTimer = null;
     let loadingHideTimer = null;
@@ -934,6 +954,14 @@
     const LOADER_HIDE_AFTER_IFRAME_LOAD_MS = 650;
     const LOADER_FADE_MS = 320;
     const LOADER_MIN_VISIBLE_MS = 900;
+
+    /*
+      These settings preload the remaining Smartsheet embeds shortly after
+      the first view opens. The small stagger prevents the browser from trying
+      to load every Smartsheet page at the exact same second.
+    */
+    const PRELOAD_START_DELAY_MS = 900;
+    const PRELOAD_STAGGER_MS = 250;
 
     function isPlaceholderLink(link) {
       if (!link) {
@@ -983,6 +1011,152 @@
         type: "view",
         id: PORTAL_CONFIG.defaultViewId || "home"
       };
+    }
+
+    function getEmbedDataForRoute(route) {
+      if (!route) {
+        return null;
+      }
+
+      if (route.type === "project") {
+        const project = getProjectById(route.id);
+
+        if (!project) {
+          return null;
+        }
+
+        return {
+          label: project.label,
+          embedSrc: project.embedSrc,
+          isProject: true,
+          viewOnlyNote: false,
+          refreshNote: false
+        };
+      }
+
+      const view = PORTAL_CONFIG.views[route.id];
+
+      if (!view) {
+        return null;
+      }
+
+      return {
+        label: view.label,
+        embedSrc: view.embedSrc,
+        isProject: false,
+        viewOnlyNote: view.viewOnlyNote,
+        refreshNote: view.refreshNote
+      };
+    }
+
+    function getAllEmbeddableRoutes() {
+      const routes = [];
+
+      Object.keys(PORTAL_CONFIG.views).forEach(function(viewId) {
+        routes.push({
+          type: "view",
+          id: viewId
+        });
+      });
+
+      PORTAL_CONFIG.projects.forEach(function(project) {
+        routes.push({
+          type: "project",
+          id: project.id
+        });
+      });
+
+      return routes;
+    }
+
+    function getOrCreateIframeForRoute(route) {
+      const key = routeKey(route);
+      const embedData = getEmbedDataForRoute(route);
+
+      if (!embedData || isPlaceholderLink(embedData.embedSrc)) {
+        return null;
+      }
+
+      if (iframeRegistry[key]) {
+        return iframeRegistry[key];
+      }
+
+      const frame = document.createElement("iframe");
+      const frameTitle = replaceDepartmentName(embedData.label || "Smartsheet view");
+
+      frame.className = "content-frame";
+      frame.setAttribute("data-route-key", key);
+      frame.setAttribute("title", frameTitle);
+      frame.setAttribute("allowfullscreen", "");
+      frame.src = embedData.embedSrc;
+
+      const iframeRecord = {
+        frame: frame,
+        isLoaded: false
+      };
+
+      iframeRegistry[key] = iframeRecord;
+
+      frame.addEventListener("load", function() {
+        iframeRecord.isLoaded = true;
+
+        if (currentViewKey === key) {
+          scheduleLoadingMessageHide();
+        }
+      });
+
+      iframePool.appendChild(frame);
+
+      return iframeRecord;
+    }
+
+    function activateIframeForRoute(route) {
+      const key = routeKey(route);
+      const iframeRecord = getOrCreateIframeForRoute(route);
+
+      if (!iframeRecord) {
+        return null;
+      }
+
+      Object.keys(iframeRegistry).forEach(function(registryKey) {
+        iframeRegistry[registryKey].frame.classList.toggle("active", registryKey === key);
+      });
+
+      return iframeRecord;
+    }
+
+    function startPreloadingEmbeddedLinks(activeRoute) {
+      if (preloadStarted) {
+        return;
+      }
+
+      preloadStarted = true;
+
+      const activeKey = activeRoute ? routeKey(activeRoute) : "";
+      const routesToPreload = getAllEmbeddableRoutes().filter(function(route) {
+        const embedData = getEmbedDataForRoute(route);
+
+        return (
+          routeKey(route) !== activeKey &&
+          embedData &&
+          !isPlaceholderLink(embedData.embedSrc)
+        );
+      });
+
+      let routeIndex = 0;
+
+      function preloadNextRoute() {
+        if (routeIndex >= routesToPreload.length) {
+          return;
+        }
+
+        getOrCreateIframeForRoute(routesToPreload[routeIndex]);
+        routeIndex += 1;
+
+        setTimeout(preloadNextRoute, PRELOAD_STAGGER_MS);
+      }
+
+      setTimeout(preloadNextRoute, PRELOAD_START_DELAY_MS);
     }
 
     function parseHashRoute() {
@@ -1204,6 +1378,7 @@
     }
 
     function loadEmbeddedLink(options) {
+      const route = options.route;
       const newEmbedLink = options.embedSrc;
       const shouldShowProjectWarning = options.isProject;
       const clickedLink = options.clickedLink;
@@ -1217,10 +1392,20 @@
       }
 
       hidePlaceholderMessage();
-      showLoadingMessage();
-
-      contentFrame.src = newEmbedLink;
       currentViewKey = viewKey;
+
+      const iframeRecord = activateIframeForRoute(route);
+
+      if (!iframeRecord) {
+        showPlaceholderMessage();
+        return false;
+      }
+
+      if (iframeRecord.isLoaded) {
+        hideLoadingMessage();
+      } else {
+        showLoadingMessage();
+      }
 
       if (shouldShowProjectWarning) {
         showWarningBar();
@@ -1314,6 +1499,7 @@
         }
 
         success = loadEmbeddedLink({
+          route: route,
           embedSrc: project.embedSrc,
           isProject: true,
           clickedLink: clickedLink,
@@ -1331,6 +1517,7 @@
         }
 
         success = loadEmbeddedLink({
+          route: route,
           embedSrc: view.embedSrc,
           isProject: false,
           clickedLink: clickedLink,
@@ -1468,8 +1655,12 @@
         return;
       }
 
-      loadRoute(route, false);
+      const didLoadRoute = loadRoute(route, false);
       currentRouteHash = window.location.hash || routeHash(route);
+
+      if (didLoadRoute) {
+        startPreloadingEmbeddedLinks(route);
+      }
     }
 
     function handleHashChange() {
@@ -1512,10 +1703,6 @@
       loadRoute(route, false);
       currentRouteHash = requestedHash;
     }
-
-    contentFrame.addEventListener("load", function() {
-      scheduleLoadingMessageHide();
-    });
 
     saveNoButton.addEventListener("click", function() {
       closeSaveModal();
@@ -1570,12 +1757,14 @@
       }
     });
 
-    refreshReminderClose.addEventListener("click", function(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      navPopupDismissedRouteKey = currentViewKey;
-      setNavPopup(false);
-    });
+    if (refreshReminderClose) {
+      refreshReminderClose.addEventListener("click", function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        navPopupDismissedRouteKey = currentViewKey;
+        setNavPopup(false);
+      });
+    }
 
     projectSearch.addEventListener("input", filterProjectLinks);
     window.addEventListener("hashchange", handleHashChange);
