@@ -425,6 +425,10 @@
       pointer-events: none;
       z-index: 0;
       background: white;
+      will-change: opacity;
+      transition:
+        opacity 0.22s ease-in-out,
+        visibility 0s linear 0.22s;
     }
 
     .content-frame.active {
@@ -432,6 +436,9 @@
       opacity: 1;
       pointer-events: auto;
       z-index: 1;
+      transition:
+        opacity 0.22s ease-in-out,
+        visibility 0s linear 0s;
     }
 
     /* --- SMARTER LOADING MESSAGE --- */
