@@ -951,6 +951,7 @@
     let lastFocusedElementBeforeModal = null;
     let iframeRegistry = {};
     let preloadStarted = false;
+    let suppressUnsavedBeforeUnload = false;
 
     let loadingShowTimer = null;
     let loadingHideTimer = null;
@@ -969,6 +970,22 @@
     */
     const PRELOAD_START_DELAY_MS = 900;
     const PRELOAD_STAGGER_MS = 250;
+
+    /*
+      If a user is signed out of Smartsheet, the embedded view may send them
+      to a separate sign-in tab. When they return, the already-preloaded
+      iframes can still show the old sign-in screen. This refreshes the portal
+      one time after a likely Smartsheet sign-in return so every iframe reloads
+      with the new signed-in session.
+    */
+    const AUTH_RETURN_REFRESH_DONE_KEY = "benefitsPortalSmartsheetAuthRefreshDone";
+    const AUTH_RETURN_PENDING_KEY = "benefitsPortalPossibleSmartsheetAuthReturn";
+    const AUTH_RETURN_MIN_AWAY_MS = 5000;
+    const AUTH_RETURN_MAX_AWAY_MS = 20 * 60 * 1000;
+    const IFRAME_INTERACTION_WINDOW_MS = 45000;
+
+    let lastIframeInteractionAt = 0;
+    let authReturnRefreshTimer = null;
 
     function isPlaceholderLink(link) {
       if (!link) {
@@ -1164,6 +1181,61 @@
       }
 
       setTimeout(preloadNextRoute, PRELOAD_START_DELAY_MS);
+    }
+
+    function notePossibleIframeInteraction() {
+      lastIframeInteractionAt = Date.now();
+    }
+
+    function markPossibleSmartsheetAuthReturn() {
+      if (sessionStorage.getItem(AUTH_RETURN_REFRESH_DONE_KEY) === "true") {
+        return;
+      }
+
+      const clickedIframeRecently = Date.now() - lastIframeInteractionAt <= IFRAME_INTERACTION_WINDOW_MS;
+
+      if (!clickedIframeRecently) {
+        return;
+      }
+
+      sessionStorage.setItem(AUTH_RETURN_PENDING_KEY, String(Date.now()));
+    }
+
+    function refreshOnceAfterSmartsheetAuthReturn() {
+      if (sessionStorage.getItem(AUTH_RETURN_REFRESH_DONE_KEY) === "true") {
+        return;
+      }
+
+      const pendingAt = Number(sessionStorage.getItem(AUTH_RETURN_PENDING_KEY) || 0);
+
+      if (!pendingAt) {
+        return;
+      }
+
+      const timeAway = Date.now() - pendingAt;
+
+      if (timeAway > AUTH_RETURN_MAX_AWAY_MS) {
+        sessionStorage.removeItem(AUTH_RETURN_PENDING_KEY);
+        return;
+      }
+
+      if (timeAway < AUTH_RETURN_MIN_AWAY_MS) {
+        return;
+      }
+
+      sessionStorage.setItem(AUTH_RETURN_REFRESH_DONE_KEY, "true");
+      sessionStorage.removeItem(AUTH_RETURN_PENDING_KEY);
+
+      suppressUnsavedBeforeUnload = true;
+      window.location.reload();
+    }
+
+    function scheduleAuthReturnRefreshCheck() {
+      clearTimeout(authReturnRefreshTimer);
+
+      authReturnRefreshTimer = setTimeout(function() {
+        refreshOnceAfterSmartsheetAuthReturn();
+      }, 500);
     }
 
     function parseHashRoute() {
@@ -1787,6 +1859,28 @@
     projectSearch.addEventListener("input", filterProjectLinks);
     window.addEventListener("hashchange", handleHashChange);
 
+    window.addEventListener("blur", function() {
+      const activeElement = document.activeElement;
+
+      if (activeElement && activeElement.classList && activeElement.classList.contains("content-frame")) {
+        notePossibleIframeInteraction();
+      }
+    }, true);
+
+    document.addEventListener("visibilitychange", function() {
+      if (document.visibilityState === "hidden") {
+        markPossibleSmartsheetAuthReturn();
+      } else {
+        scheduleAuthReturnRefreshCheck();
+      }
+    });
+
+    window.addEventListener("focus", function() {
+      if (!document.hidden) {
+        scheduleAuthReturnRefreshCheck();
+      }
+    });
+
     document.addEventListener("click", function(event) {
       const clickedLink = event.target.closest("a");
 
@@ -1845,7 +1939,7 @@
     });
 
     window.addEventListener("beforeunload", function(e) {
-      if (projectModeActive) {
+      if (projectModeActive && !suppressUnsavedBeforeUnload) {
         e.preventDefault();
         e.returnValue = "";
       }
