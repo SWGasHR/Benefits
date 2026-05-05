@@ -24,25 +24,183 @@
       color: white;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       padding: 0 16px;
       height: 56px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       position: relative;
       z-index: 20;
       flex-shrink: 0;
+      overflow: visible;
+    }
+
+    .nav-scroll-shell {
+      position: relative;
+      display: flex;
+      align-items: center;
+      height: 100%;
+      min-width: 0;
+      flex: 1 1 auto;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .nav-scroll-shell::before,
+    .nav-scroll-shell::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      bottom: 8px;
+      width: 42px;
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0.92;
+      transition: opacity 0.2s ease;
+    }
+
+    .nav-scroll-shell::before {
+      left: 0;
+      background: linear-gradient(90deg, #252763 0%, rgba(37,39,99,0) 100%);
+    }
+
+    .nav-scroll-shell::after {
+      right: 0;
+      background: linear-gradient(270deg, #252763 0%, rgba(37,39,99,0) 100%);
+    }
+
+    .nav-scroll-region {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      height: 100%;
+      flex: 1 1 auto;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      overflow-x: hidden;
+      overflow-y: hidden;
+      overscroll-behavior-x: contain;
+      scroll-behavior: smooth;
+      scrollbar-gutter: auto;
+      padding: 0;
+      box-sizing: border-box;
+      transition: padding 0.22s ease;
+    }
+
+    .nav-scroll-shell:not(.no-scroll) .nav-scroll-region {
+      overflow-x: auto;
+      scrollbar-gutter: stable;
+      padding: 0 46px;
+    }
+
+    .nav-scroll-region::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .nav-scroll-region::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.08);
+      border-radius: 999px;
+      margin: 0 18px;
+    }
+
+    .nav-scroll-region::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.46);
+      border-radius: 999px;
+      border: 2px solid #252763;
+    }
+
+    .nav-scroll-region::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.7);
+    }
+
+    .nav-scroll-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(calc(-50% - 3px));
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid rgba(255,255,255,0.36);
+      border-radius: 999px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.26), rgba(255,255,255,0.10));
+      color: #ffffff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      z-index: 5;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.20);
+      backdrop-filter: blur(5px);
+      transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .nav-scroll-button svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3.2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .nav-scroll-button:hover,
+    .nav-scroll-button:focus {
+      background: rgba(255,255,255,0.30);
+      border-color: rgba(255,255,255,0.70);
+      outline: none;
+      transform: translateY(calc(-50% - 4px));
+    }
+
+    .nav-scroll-button:active {
+      transform: translateY(calc(-50% - 2px));
+    }
+
+    .nav-scroll-button-left {
+      left: 5px;
+    }
+
+    .nav-scroll-button-right {
+      right: 5px;
+    }
+
+    .nav-scroll-button[disabled] {
+      opacity: 0.24;
+      cursor: default;
+      pointer-events: none;
+      box-shadow: none;
+    }
+
+    .nav-scroll-shell.no-scroll {
+      overflow: visible;
+    }
+
+    .nav-scroll-shell.no-scroll::before,
+    .nav-scroll-shell.no-scroll::after,
+    .nav-scroll-shell.no-scroll .nav-scroll-button {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .nav-scroll-shell.no-scroll .nav-scroll-region {
+      padding-left: 0;
+      padding-right: 0;
+      overflow-x: hidden;
+      scrollbar-gutter: auto;
     }
 
     .nav-home {
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 42px;
-      height: 42px;
-      border-radius: 8px;
+      width: 46px;
+      height: 46px;
+      border-radius: 9px;
       text-decoration: none;
-      transition: background-color 0.2s ease;
+      transition: background-color 0.2s ease, transform 0.2s ease;
       flex-shrink: 0;
+      position: relative;
+      z-index: 4;
     }
 
     .nav-home:hover,
@@ -50,11 +208,33 @@
       background-color: rgba(255,255,255,0.22);
     }
 
+    .nav-home:hover {
+      transform: translateY(-1px);
+    }
+
     .nav-home svg {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       fill: white;
       display: block;
+    }
+
+    .nav-separator {
+      color: #ffffff;
+      opacity: 0.78;
+      font-size: 20px;
+      font-weight: 600;
+      line-height: 1;
+      padding: 0 3px;
+      margin: 0 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 26px;
+      flex: 0 0 auto;
+      user-select: none;
+      pointer-events: none;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.25);
     }
 
     .nav-item,
@@ -91,8 +271,8 @@
 
     .dropdown-menu {
       display: none;
-      position: absolute;
-      top: 100%;
+      position: fixed;
+      top: 56px;
       left: 0;
       min-width: 280px;
       background: white;
@@ -101,7 +281,7 @@
       box-shadow: 0 10px 24px rgba(0,0,0,0.18);
       padding: 10px 0;
       z-index: 999;
-      max-height: 70vh;
+      max-height: calc(100vh - 70px);
       overflow-y: auto;
     }
 
@@ -154,13 +334,28 @@
 
     /* --- TOP NAV MESSAGE POP-UP --- */
     .nav-reminder-slot {
-      flex: 1;
-      min-width: 260px;
+      flex: 0 1 340px;
+      min-width: 190px;
+      max-width: 390px;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 18px;
+      padding: 0 10px;
       box-sizing: border-box;
+      overflow: visible;
+      opacity: 1;
+      transition: flex-basis 0.24s ease, min-width 0.24s ease, max-width 0.24s ease, padding 0.24s ease, opacity 0.18s ease;
+    }
+
+    .nav-reminder-slot.collapsed {
+      display: none;
+      flex: 0 0 0;
+      min-width: 0;
+      max-width: 0;
+      padding: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
     }
 
     .nav-refresh-popover {
@@ -238,6 +433,7 @@
       border-radius: 8px;
       transition: background-color 0.2s ease;
       flex-shrink: 0;
+      margin-left: auto;
     }
 
     .swgas-logo-link:hover {
@@ -248,6 +444,16 @@
       height: 60px;
       width: auto;
       display: block;
+    }
+
+    @media (max-width: 980px) {
+      .nav-reminder-slot {
+        display: none;
+      }
+
+      .top-nav {
+        padding: 0 10px;
+      }
     }
 
     /* --- PROJECT SEARCH --- */
@@ -708,114 +914,146 @@
 
   <div class="top-nav">
 
-    <a class="nav-home portal-view-link active"
-       href="#home"
-       data-view-id="home"
-       title="Home">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M12 3.2 3 10.4v10.4c0 .6.4 1 1 1h5.5c.6 0 1-.4 1-1v-5.2h3v5.2c0 .6.4 1 1 1H20c.6 0 1-.4 1-1V10.4l-9-7.2z"/>
-      </svg>
-    </a>
+    <div class="nav-scroll-shell no-scroll" id="navScrollShell" aria-label="Portal navigation">
+      <button class="nav-scroll-button nav-scroll-button-left"
+              id="navScrollLeft"
+              type="button"
+              aria-label="Show previous navigation topics">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M15 5 8 12l7 7"></path>
+        </svg>
+      </button>
 
-    <a class="nav-item portal-view-link"
-       href="#mainInitiatives"
-       data-view-id="mainInitiatives">
-      Main Initiatives
-    </a>
-
-    <a class="nav-item portal-view-link"
-       href="#allDepartmentProjects"
-       data-view-id="allDepartmentProjects">
-      All Projects View Only
-    </a>
-
-    <a class="nav-item portal-view-link"
-       href="#allHrPersonalTasks"
-       data-view-id="allHrPersonalTasks">
-      All HR Personal Tasks
-    </a>
-
-    <div class="dropdown">
-      <div class="dropdown-toggle" id="projectDropdownToggle" tabindex="0">
-        <span id="projectDropdownLabel">Projects</span> <span class="caret">▼</span>
-      </div>
-
-      <div class="dropdown-menu">
-        <div class="project-search-wrap">
-          <input
-            class="project-search"
-            id="projectSearch"
-            type="text"
-            placeholder="Search projects..."
-            aria-label="Search projects">
-        </div>
-
-        <div id="projectLinksContainer"></div>
-
-        <div class="no-project-results" id="noProjectResults">
-          No matching projects found.
-        </div>
-      </div>
-    </div>
-
-    <div class="dropdown">
-      <div class="dropdown-toggle" tabindex="0">
-        Navigation <span class="caret">▼</span>
-      </div>
-      <div class="dropdown-menu">
-        <div class="dropdown-header">HRLT</div>
-        <a href="https://swgashr.github.io/HR">Albert Taylor</a>
-        <a href="https://swgashr.github.io/HR-Operations">Gail Carmona</a>
-        <a href="https://swgashr.github.io/HR-Compensation-Benefits-HRS">Mike Bryant</a>
-        <a href="https://swgashr.github.io/HR-EX-DEI-TA">Courtney Moore</a>
-
-        <div class="dropdown-divider"></div>
-
-        <div class="dropdown-header">Departments</div>
-        <a href="https://swgashr.github.io/Benefits">Benefits</a>
-        <a href="https://swgashr.github.io/Compensation">Compensation</a>
-        <a href="https://swgashr.github.io/DEI">DE&I</a>
-        <a href="https://swgashr.github.io/HRLO">HRLO</a>
-        <a href="https://swgashr.github.io/Employee-Experience">Employee Experience</a>
-        <a href="https://swgashr.github.io/HRBP">HRBP</a>
-        <a href="https://swgashr.github.io/HRCM">HRCM</a>
-        <a href="https://swgashr.github.io/HRS">HRS</a>
-        <a href="https://swgashr.github.io/HRSS">HRSS</a>
-        <a href="https://swgashr.github.io/Labor-Relations">Labor Relations</a>
-        <a href="https://swgashr.github.io/Talent-Acquisition">Talent Acquisition</a>
-        <a href="https://swgashr.github.io/Talent-Development">Talent Development</a>
-
-        <div class="dropdown-divider"></div>
-
-        <div class="dropdown-header">Raid Log</div>
-        <a href="https://swgashr.github.io/Raid-Log">Raid Log</a>
-
-        <div class="dropdown-divider"></div>
-
-        <div class="dropdown-header">KPIs</div>
-        <a href="https://swgashr.github.io/KPIS">KPI Dashboard</a>
-      </div>
-    </div>
-
-    <div class="dropdown">
-      <div class="dropdown-toggle" tabindex="0">
-        Support <span class="caret">▼</span>
-      </div>
-      <div class="dropdown-menu">
-        <a href="https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7" target="_blank" rel="noopener noreferrer">
-          Smartsheet Project Creation Request
+      <div class="nav-scroll-region" id="navScrollRegion">
+        <a class="nav-home portal-view-link active"
+           href="#home"
+           data-view-id="home"
+           title="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 3.2 3 10.4v10.4c0 .6.4 1 1 1h5.5c.6 0 1-.4 1-1v-5.2h3v5.2c0 .6.4 1 1 1H20c.6 0 1-.4 1-1V10.4l-9-7.2z"/>
+          </svg>
         </a>
 
-        <a href="https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593" target="_blank" rel="noopener noreferrer">
-          Smartsheet Support
+        <a class="nav-item portal-view-link"
+           href="#mainInitiatives"
+           data-view-id="mainInitiatives">
+          Main Initiatives
         </a>
 
-        <a href="INSERT_SUPPORT_LINK_3_HERE">Job Aid (MGR)</a>
-        <a href="INSERT_SUPPORT_LINK_4_HERE">Job Aid (DIR)</a>
+        <span class="nav-separator" aria-hidden="true">|</span>
+
+        <a class="nav-item portal-view-link"
+           href="#allDepartmentProjects"
+           data-view-id="allDepartmentProjects">
+          All Projects View Only
+        </a>
+
+        <span class="nav-separator" aria-hidden="true">|</span>
+
+        <a class="nav-item portal-view-link"
+           href="#allHrPersonalTasks"
+           data-view-id="allHrPersonalTasks">
+          All HR Personal Tasks
+        </a>
+
+        <span class="nav-separator" aria-hidden="true">|</span>
+
+        <div class="dropdown">
+          <div class="dropdown-toggle" id="projectDropdownToggle" tabindex="0">
+            <span id="projectDropdownLabel">Projects</span> <span class="caret">▼</span>
+          </div>
+
+          <div class="dropdown-menu">
+            <div class="project-search-wrap">
+              <input
+                class="project-search"
+                id="projectSearch"
+                type="text"
+                placeholder="Search projects..."
+                aria-label="Search projects">
+            </div>
+
+            <div id="projectLinksContainer"></div>
+
+            <div class="no-project-results" id="noProjectResults">
+              No matching projects found.
+            </div>
+          </div>
+        </div>
+
+        <span class="nav-separator" aria-hidden="true">|</span>
+
+        <div class="dropdown">
+          <div class="dropdown-toggle" tabindex="0">
+            Navigation <span class="caret">▼</span>
+          </div>
+          <div class="dropdown-menu">
+            <div class="dropdown-header">HRLT</div>
+            <a href="https://swgashr.github.io/HR">Albert Taylor</a>
+            <a href="https://swgashr.github.io/HR-Operations">Gail Carmona</a>
+            <a href="https://swgashr.github.io/HR-Compensation-Benefits-HRS">Mike Bryant</a>
+            <a href="https://swgashr.github.io/HR-EX-DEI-TA">Courtney Moore</a>
+
+            <div class="dropdown-divider"></div>
+
+            <div class="dropdown-header">Departments</div>
+            <a href="https://swgashr.github.io/Benefits">Benefits</a>
+            <a href="https://swgashr.github.io/Compensation">Compensation</a>
+            <a href="https://swgashr.github.io/DEI">DE&I</a>
+            <a href="https://swgashr.github.io/HRLO">HRLO</a>
+            <a href="https://swgashr.github.io/Employee-Experience">Employee Experience</a>
+            <a href="https://swgashr.github.io/HRBP">HRBP</a>
+            <a href="https://swgashr.github.io/HRCM">HRCM</a>
+            <a href="https://swgashr.github.io/HRS">HRS</a>
+            <a href="https://swgashr.github.io/HRSS">HRSS</a>
+            <a href="https://swgashr.github.io/Labor-Relations">Labor Relations</a>
+            <a href="https://swgashr.github.io/Talent-Acquisition">Talent Acquisition</a>
+            <a href="https://swgashr.github.io/Talent-Development">Talent Development</a>
+
+            <div class="dropdown-divider"></div>
+
+            <div class="dropdown-header">Raid Log</div>
+            <a href="https://swgashr.github.io/Raid-Log">Raid Log</a>
+
+            <div class="dropdown-divider"></div>
+
+            <div class="dropdown-header">KPIs</div>
+            <a href="https://swgashr.github.io/KPIS">KPI Dashboard</a>
+          </div>
+        </div>
+
+        <span class="nav-separator" aria-hidden="true">|</span>
+
+        <div class="dropdown">
+          <div class="dropdown-toggle" tabindex="0">
+            Support <span class="caret">▼</span>
+          </div>
+          <div class="dropdown-menu">
+            <a href="https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7" target="_blank" rel="noopener noreferrer">
+              Smartsheet Project Creation Request
+            </a>
+
+            <a href="https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593" target="_blank" rel="noopener noreferrer">
+              Smartsheet Support
+            </a>
+
+            <a href="INSERT_SUPPORT_LINK_3_HERE">Job Aid (MGR)</a>
+            <a href="INSERT_SUPPORT_LINK_4_HERE">Job Aid (DIR)</a>
+          </div>
+        </div>
       </div>
+
+      <button class="nav-scroll-button nav-scroll-button-right"
+              id="navScrollRight"
+              type="button"
+              aria-label="Show more navigation topics">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="m9 5 7 7-7 7"></path>
+        </svg>
+      </button>
     </div>
 
-    <div class="nav-reminder-slot">
+    <div class="nav-reminder-slot collapsed" id="navReminderSlot">
       <div class="nav-refresh-popover hidden" id="refreshReminder" role="status" aria-live="polite">
         <button class="nav-refresh-close"
                 id="refreshReminderClose"
@@ -1006,6 +1244,11 @@
     const noProjectResults = document.getElementById("noProjectResults");
     const projectDropdownToggle = document.getElementById("projectDropdownToggle");
     const projectDropdownLabel = document.getElementById("projectDropdownLabel");
+    const navScrollShell = document.getElementById("navScrollShell");
+    const navScrollRegion = document.getElementById("navScrollRegion");
+    const navScrollLeft = document.getElementById("navScrollLeft");
+    const navScrollRight = document.getElementById("navScrollRight");
+    const navReminderSlot = document.getElementById("navReminderSlot");
 
     let projectModeActive = false;
     let pendingNavigationAction = null;
@@ -1457,6 +1700,11 @@
 
     function setNavPopup(shouldShow, message) {
       if (!refreshReminder) {
+        if (navReminderSlot) {
+          navReminderSlot.classList.add("collapsed");
+        }
+
+        updateNavScrollControlsSoon();
         return;
       }
 
@@ -1464,11 +1712,15 @@
         refreshReminderText.textContent = message;
       }
 
-      if (shouldShow && navPopupDismissedRouteKey !== currentViewKey) {
-        refreshReminder.classList.remove("hidden");
-      } else {
-        refreshReminder.classList.add("hidden");
+      const shouldShowPopup = shouldShow && navPopupDismissedRouteKey !== currentViewKey;
+
+      refreshReminder.classList.toggle("hidden", !shouldShowPopup);
+
+      if (navReminderSlot) {
+        navReminderSlot.classList.toggle("collapsed", !shouldShowPopup);
       }
+
+      updateNavScrollControlsSoon();
     }
 
     function setRefreshNote(shouldShow) {
@@ -1492,6 +1744,18 @@
         projectDropdownToggle.classList.add("active");
       } else {
         projectDropdownToggle.classList.remove("active");
+      }
+
+      const navElementToReveal = isProject ? projectDropdownToggle : activeLink;
+
+      if (navElementToReveal && navScrollRegion && navScrollRegion.contains(navElementToReveal)) {
+        navElementToReveal.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "nearest"
+        });
+
+        setTimeout(updateNavScrollControls, 320);
       }
     }
 
@@ -2114,9 +2378,152 @@
       }
     });
 
+    function getNavHorizontalPadding() {
+      if (!navScrollRegion) {
+        return 0;
+      }
+
+      const styles = window.getComputedStyle(navScrollRegion);
+      const paddingLeft = parseFloat(styles.paddingLeft) || 0;
+      const paddingRight = parseFloat(styles.paddingRight) || 0;
+
+      return paddingLeft + paddingRight;
+    }
+
+    function updateNavScrollControls() {
+      if (!navScrollRegion || !navScrollShell) {
+        return;
+      }
+
+      const horizontalPadding = getNavHorizontalPadding();
+      const naturalContentWidth = Math.max(navScrollRegion.scrollWidth - horizontalPadding, 0);
+      const availableWidthWithoutArrows = navScrollRegion.clientWidth;
+      const hasOverflow = naturalContentWidth > availableWidthWithoutArrows + 2;
+
+      navScrollShell.classList.toggle("no-scroll", !hasOverflow);
+
+      if (!hasOverflow) {
+        navScrollRegion.scrollLeft = 0;
+
+        if (navScrollLeft) {
+          navScrollLeft.disabled = true;
+        }
+
+        if (navScrollRight) {
+          navScrollRight.disabled = true;
+        }
+
+        return;
+      }
+
+      /* Force the browser to apply the has-scroll padding before reading the scroll limits. */
+      void navScrollRegion.offsetWidth;
+
+      const maxScrollLeft = Math.max(navScrollRegion.scrollWidth - navScrollRegion.clientWidth, 0);
+      const atStart = navScrollRegion.scrollLeft <= 2;
+      const atEnd = navScrollRegion.scrollLeft >= maxScrollLeft - 2;
+
+      if (navScrollLeft) {
+        navScrollLeft.disabled = atStart;
+      }
+
+      if (navScrollRight) {
+        navScrollRight.disabled = atEnd;
+      }
+    }
+
+    function updateNavScrollControlsSoon() {
+      requestAnimationFrame(function() {
+        updateNavScrollControls();
+        requestAnimationFrame(updateNavScrollControls);
+      });
+    }
+
+    function scrollNavTopics(direction) {
+      if (!navScrollRegion) {
+        return;
+      }
+
+      const scrollAmount = Math.max(Math.round(navScrollRegion.clientWidth * 0.72), 220);
+
+      navScrollRegion.scrollBy({
+        left: direction * scrollAmount,
+        behavior: "smooth"
+      });
+
+      setTimeout(updateNavScrollControls, 260);
+    }
+
+    function positionDropdownMenu(dropdown) {
+      const menu = dropdown ? dropdown.querySelector(".dropdown-menu") : null;
+
+      if (!menu) {
+        return;
+      }
+
+      const dropdownRect = dropdown.getBoundingClientRect();
+      const menuWidth = menu.offsetWidth || menu.scrollWidth || 280;
+      const top = dropdownRect.bottom;
+      const left = Math.max(10, Math.min(dropdownRect.left, window.innerWidth - menuWidth - 10));
+
+      menu.style.top = top + "px";
+      menu.style.left = left + "px";
+    }
+
+    function positionOpenDropdownMenus() {
+      document.querySelectorAll(".dropdown:hover, .dropdown:focus-within").forEach(function(dropdown) {
+        positionDropdownMenu(dropdown);
+      });
+    }
+
+    document.querySelectorAll(".dropdown").forEach(function(dropdown) {
+      dropdown.addEventListener("mouseenter", function() {
+        requestAnimationFrame(function() {
+          positionDropdownMenu(dropdown);
+        });
+      });
+
+      dropdown.addEventListener("focusin", function() {
+        requestAnimationFrame(function() {
+          positionDropdownMenu(dropdown);
+        });
+      });
+
+      dropdown.addEventListener("click", function() {
+        requestAnimationFrame(function() {
+          positionDropdownMenu(dropdown);
+        });
+      });
+    });
+
+    if (navScrollLeft) {
+      navScrollLeft.addEventListener("click", function() {
+        scrollNavTopics(-1);
+      });
+    }
+
+    if (navScrollRight) {
+      navScrollRight.addEventListener("click", function() {
+        scrollNavTopics(1);
+      });
+    }
+
+    if (navScrollRegion) {
+      navScrollRegion.addEventListener("scroll", function() {
+        positionOpenDropdownMenus();
+        updateNavScrollControls();
+      });
+    }
+
+    window.addEventListener("resize", function() {
+      positionOpenDropdownMenus();
+      updateNavScrollControlsSoon();
+    });
+
     applyConfigToNavigation();
     renderProjectLinks();
     loadInitialRoute();
+    updateNavScrollControlsSoon();
   </script>
 
 </body>
