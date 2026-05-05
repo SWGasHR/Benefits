@@ -335,16 +335,16 @@
 
     /* --- TOP NAV MESSAGE POP-UP --- */
     .nav-reminder-slot {
-      flex: 0 1 clamp(180px, 25vw, 360px);
-      min-width: 0;
-      max-width: 360px;
+      flex: 0 1 clamp(245px, 28vw, 390px);
+      min-width: 245px;
+      max-width: 390px;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 8px;
+      padding: 0 16px 0 8px;
       box-sizing: border-box;
-      overflow: hidden;
+      overflow: visible;
       opacity: 1;
       transition: flex-basis 0.24s ease, min-width 0.24s ease, max-width 0.24s ease, padding 0.24s ease, opacity 0.18s ease;
     }
@@ -368,22 +368,22 @@
       width: 100%;
       max-width: 100%;
       min-width: 0;
-      min-height: 32px;
-      max-height: 40px;
+      min-height: 34px;
+      max-height: 48px;
       box-sizing: border-box;
       background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
       color: #252763;
       border: 1px solid rgba(255,255,255,0.72);
       border-radius: 999px;
-      padding: 7px 38px 7px 14px;
+      padding: 7px 28px 7px 14px;
       font-size: clamp(10px, 0.72vw, 12px);
-      line-height: 1.15;
+      line-height: 1.12;
       font-weight: 700;
       text-align: center;
       letter-spacing: 0.1px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.16);
       flex: 1 1 auto;
-      overflow: hidden;
+      overflow: visible;
     }
 
     .nav-refresh-popover.hidden {
@@ -395,9 +395,9 @@
       width: 100%;
       min-width: 0;
       text-align: center;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow: visible;
+      text-overflow: clip;
+      white-space: normal;
     }
 
     .nav-refresh-popover strong {
@@ -406,8 +406,8 @@
 
     .nav-refresh-close {
       position: absolute;
-      top: 50%;
-      right: 8px;
+      top: -8px;
+      right: -8px;
       width: 22px;
       height: 22px;
       padding: 0;
@@ -418,32 +418,32 @@
       cursor: pointer;
       font-size: 15px;
       font-weight: 800;
-      line-height: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      line-height: 0;
+      display: grid;
+      place-items: center;
+      box-sizing: border-box;
       box-shadow: 0 3px 8px rgba(0,0,0,0.22);
       font-family: inherit;
       appearance: none;
       -webkit-appearance: none;
-      transform: translateY(-50%);
+      transform: none;
       transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .nav-refresh-close:hover,
     .nav-refresh-close:focus {
       background: #2f5fb8;
-      transform: translateY(calc(-50% - 1px));
+      transform: translateY(-1px);
       box-shadow: 0 5px 10px rgba(0,0,0,0.25);
       outline: none;
     }
 
 
     .nav-refresh-close svg {
-      width: 10px;
-      height: 10px;
+      width: 9px;
+      height: 9px;
       display: block;
-      flex: 0 0 10px;
+      flex: 0 0 9px;
       fill: none;
       stroke: currentColor;
       stroke-width: 3;
