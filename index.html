@@ -193,12 +193,12 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 46px;
-      height: 46px;
-      border-radius: 9px;
+      width: 52px;
+      height: 52px;
+      border-radius: 10px;
       text-decoration: none;
       transition: background-color 0.2s ease, transform 0.2s ease;
-      flex: 0 0 46px;
+      flex: 0 0 52px;
       margin-right: 2px;
       position: relative;
       z-index: 6;
@@ -214,8 +214,8 @@
     }
 
     .nav-home svg {
-      width: 36px;
-      height: 36px;
+      width: 42px;
+      height: 42px;
       fill: white;
       display: block;
     }
@@ -335,15 +335,16 @@
 
     /* --- TOP NAV MESSAGE POP-UP --- */
     .nav-reminder-slot {
-      flex: 0 1 340px;
-      min-width: 190px;
-      max-width: 390px;
+      flex: 0 1 clamp(180px, 25vw, 360px);
+      min-width: 0;
+      max-width: 360px;
+      height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 0 10px;
+      padding: 0 8px;
       box-sizing: border-box;
-      overflow: visible;
+      overflow: hidden;
       opacity: 1;
       transition: flex-basis 0.24s ease, min-width 0.24s ease, max-width 0.24s ease, padding 0.24s ease, opacity 0.18s ease;
     }
@@ -364,21 +365,25 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      width: min(100%, 390px);
-      min-height: 34px;
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      min-height: 32px;
+      max-height: 40px;
       box-sizing: border-box;
       background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
       color: #252763;
       border: 1px solid rgba(255,255,255,0.72);
       border-radius: 999px;
-      padding: 8px 38px 8px 18px;
-      font-size: 12px;
-      line-height: 1.2;
+      padding: 7px 38px 7px 14px;
+      font-size: clamp(10px, 0.72vw, 12px);
+      line-height: 1.15;
       font-weight: 700;
       text-align: center;
       letter-spacing: 0.1px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.16);
-      flex-shrink: 1;
+      flex: 1 1 auto;
+      overflow: hidden;
     }
 
     .nav-refresh-popover.hidden {
@@ -388,7 +393,11 @@
     .nav-refresh-text {
       display: block;
       width: 100%;
+      min-width: 0;
       text-align: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .nav-refresh-popover strong {
@@ -397,16 +406,17 @@
 
     .nav-refresh-close {
       position: absolute;
-      top: -7px;
-      right: -7px;
-      width: 21px;
-      height: 21px;
+      top: 50%;
+      right: 8px;
+      width: 22px;
+      height: 22px;
+      padding: 0;
       border: 2px solid #ffffff;
       border-radius: 50%;
       background: #4f7fd8;
       color: white;
       cursor: pointer;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 800;
       line-height: 1;
       display: flex;
@@ -414,15 +424,30 @@
       justify-content: center;
       box-shadow: 0 3px 8px rgba(0,0,0,0.22);
       font-family: inherit;
+      appearance: none;
+      -webkit-appearance: none;
+      transform: translateY(-50%);
       transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     }
 
     .nav-refresh-close:hover,
     .nav-refresh-close:focus {
       background: #2f5fb8;
-      transform: translateY(-1px);
+      transform: translateY(calc(-50% - 1px));
       box-shadow: 0 5px 10px rgba(0,0,0,0.25);
       outline: none;
+    }
+
+
+    .nav-refresh-close svg {
+      width: 10px;
+      height: 10px;
+      display: block;
+      flex: 0 0 10px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 3;
+      stroke-linecap: round;
     }
 
     .swgas-logo-link {
@@ -1061,7 +1086,9 @@
                 id="refreshReminderClose"
                 type="button"
                 aria-label="Dismiss navigation reminder">
-          ×
+          <svg viewBox="0 0 12 12" aria-hidden="true" focusable="false">
+            <path d="M3 3l6 6M9 3 3 9"></path>
+          </svg>
         </button>
         <span class="nav-refresh-text">This Dashboard updates every 24 hours.</span>
       </div>
@@ -1712,6 +1739,7 @@
 
       if (message && refreshReminderText) {
         refreshReminderText.textContent = message;
+        refreshReminderText.setAttribute("title", message);
       }
 
       const shouldShowPopup = shouldShow && navPopupDismissedRouteKey !== currentViewKey;
