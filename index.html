@@ -24,8 +24,8 @@
       color: white;
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 0 16px;
+      gap: 6px;
+      padding: 0 6px 0 14px;
       height: 56px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.15);
       position: relative;
@@ -198,9 +198,10 @@
       border-radius: 9px;
       text-decoration: none;
       transition: background-color 0.2s ease, transform 0.2s ease;
-      flex-shrink: 0;
+      flex: 0 0 46px;
+      margin-right: 2px;
       position: relative;
-      z-index: 4;
+      z-index: 6;
     }
 
     .nav-home:hover,
@@ -429,11 +430,12 @@
       align-items: center;
       justify-content: center;
       height: 50px;
-      padding: 4px 10px;
+      padding: 4px 0 4px 8px;
       border-radius: 8px;
       transition: background-color 0.2s ease;
       flex-shrink: 0;
       margin-left: auto;
+      margin-right: -2px;
     }
 
     .swgas-logo-link:hover {
@@ -452,7 +454,7 @@
       }
 
       .top-nav {
-        padding: 0 10px;
+        padding: 0 4px 0 10px;
       }
     }
 
@@ -914,7 +916,16 @@
 
   <div class="top-nav">
 
-    <div class="nav-scroll-shell no-scroll" id="navScrollShell" aria-label="Portal navigation">
+    <a class="nav-home portal-view-link active"
+       href="#home"
+       data-view-id="home"
+       title="Home">
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3.2 3 10.4v10.4c0 .6.4 1 1 1h5.5c.6 0 1-.4 1-1v-5.2h3v5.2c0 .6.4 1 1 1H20c.6 0 1-.4 1-1V10.4l-9-7.2z"/>
+      </svg>
+    </a>
+
+    <div class="nav-scroll-shell no-scroll" id="navScrollShell" aria-label="Portal topic navigation">
       <button class="nav-scroll-button nav-scroll-button-left"
               id="navScrollLeft"
               type="button"
@@ -925,15 +936,6 @@
       </button>
 
       <div class="nav-scroll-region" id="navScrollRegion">
-        <a class="nav-home portal-view-link active"
-           href="#home"
-           data-view-id="home"
-           title="Home">
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 3.2 3 10.4v10.4c0 .6.4 1 1 1h5.5c.6 0 1-.4 1-1v-5.2h3v5.2c0 .6.4 1 1 1H20c.6 0 1-.4 1-1V10.4l-9-7.2z"/>
-          </svg>
-        </a>
-
         <a class="nav-item portal-view-link"
            href="#mainInitiatives"
            data-view-id="mainInitiatives">
