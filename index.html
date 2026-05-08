@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Benefits Project Portal Template</title>
+  <title>Benfits Project Portal</title>
   <link rel="icon" type="image/png" href="department.png">
   <link rel="preconnect" href="https://workapps.smartsheet.com">
   <link rel="dns-prefetch" href="https://workapps.smartsheet.com">
@@ -189,6 +189,14 @@
       padding-right: 0;
       overflow-x: hidden;
       scrollbar-gutter: auto;
+    }
+
+    /* Used only for instant, no-flicker overflow measurement in JavaScript. */
+    .nav-scroll-shell.nav-scroll-measuring .nav-scroll-region,
+    .nav-scroll-shell.nav-scroll-measuring .nav-scroll-button,
+    .nav-scroll-shell.nav-scroll-measuring::before,
+    .nav-scroll-shell.nav-scroll-measuring::after {
+      transition: none !important;
     }
 
     .nav-home {
@@ -2855,85 +2863,110 @@
       });
     }
 
+    function getOuterElementWidth(element) {
+      if (!element) {
+        return 0;
+      }
+
+      const styles = window.getComputedStyle(element);
+      const marginLeft = parseFloat(styles.marginLeft) || 0;
+      const marginRight = parseFloat(styles.marginRight) || 0;
+      const rect = element.getBoundingClientRect();
+
+      return rect.width + marginLeft + marginRight;
+    }
+
     function getNavContentWidthFromChildren() {
       if (!navScrollRegion) {
         return 0;
       }
 
       return getVisibleNavChildren().reduce(function(totalWidth, child) {
-        const childStyles = window.getComputedStyle(child);
-        const marginLeft = parseFloat(childStyles.marginLeft) || 0;
-        const marginRight = parseFloat(childStyles.marginRight) || 0;
-        const targetElement = child.classList.contains("dropdown")
-          ? child.querySelector(".dropdown-toggle") || child
-          : child;
-        const targetStyles = window.getComputedStyle(targetElement);
-        const targetPaddingLeft = parseFloat(targetStyles.paddingLeft) || 0;
-        const targetPaddingRight = parseFloat(targetStyles.paddingRight) || 0;
-        const targetBorderLeft = parseFloat(targetStyles.borderLeftWidth) || 0;
-        const targetBorderRight = parseFloat(targetStyles.borderRightWidth) || 0;
-        const targetNaturalWidth = targetElement.scrollWidth + targetPaddingLeft + targetPaddingRight + targetBorderLeft + targetBorderRight;
-        const childNaturalWidth = Math.max(child.scrollWidth || 0, child.offsetWidth || 0, targetNaturalWidth || 0);
-
-        return totalWidth + childNaturalWidth + marginLeft + marginRight;
+        return totalWidth + getOuterElementWidth(child);
       }, 0);
     }
 
-    function getNavAvailableWidth() {
+    function getNavVisibleBounds() {
       if (!navScrollShell || !navScrollRegion) {
-        return 0;
+        return {
+          left: 0,
+          right: 0,
+          width: 0
+        };
       }
 
       const shellRect = navScrollShell.getBoundingClientRect();
       const regionRect = navScrollRegion.getBoundingClientRect();
-      const topNavRect = topNav ? topNav.getBoundingClientRect() : null;
-      const rightBoundaryCandidates = [shellRect.right, regionRect.right];
+      const visibleLeft = Math.max(shellRect.left, regionRect.left);
+      const visibleRight = Math.min(shellRect.right, regionRect.right);
 
-      if (topNavRect) {
-        rightBoundaryCandidates.push(topNavRect.right);
-      }
-
-      if (navReminderSlot && !navReminderSlot.classList.contains("collapsed")) {
-        rightBoundaryCandidates.push(navReminderSlot.getBoundingClientRect().left - 6);
-      }
-
-      if (departmentSharePointLink) {
-        rightBoundaryCandidates.push(departmentSharePointLink.getBoundingClientRect().left - 6);
-      }
-
-      const visibleLeft = Math.max(shellRect.left, regionRect.left, topNavRect ? topNavRect.left : shellRect.left);
-      const visibleRight = Math.min.apply(null, rightBoundaryCandidates.filter(function(value) {
-        return Number.isFinite(value) && value > visibleLeft;
-      }));
-
-      return Math.max(Math.floor(visibleRight - visibleLeft - getNavHorizontalPadding()), 0);
+      return {
+        left: visibleLeft,
+        right: visibleRight,
+        width: Math.max(visibleRight - visibleLeft, 0)
+      };
     }
 
-    function navHasPartiallyHiddenItems() {
+    function getNavAvailableWidth() {
+      return getNavVisibleBounds().width;
+    }
+
+    function getNavItemTargetElement(child) {
+      if (!child) {
+        return null;
+      }
+
+      return child.classList.contains("dropdown")
+        ? child.querySelector(".dropdown-toggle") || child
+        : child;
+    }
+
+    function measureNavOverflowWithoutScrollControls() {
       if (!navScrollShell || !navScrollRegion) {
         return false;
       }
 
-      const shellRect = navScrollShell.getBoundingClientRect();
-      const regionRect = navScrollRegion.getBoundingClientRect();
-      const topNavRect = topNav ? topNav.getBoundingClientRect() : null;
-      const tolerance = 2;
-      const visibleLeft = Math.max(shellRect.left, regionRect.left, topNavRect ? topNavRect.left : shellRect.left);
-      const visibleRight = visibleLeft + getNavAvailableWidth() + getNavHorizontalPadding();
+      const tolerance = 0.5;
+      const hadNoScrollClass = navScrollShell.classList.contains("no-scroll");
+      const originalScrollLeft = navScrollRegion.scrollLeft;
 
-      return getVisibleNavChildren().some(function(child) {
+      /*
+        Measure in the no-scroll state so the 46px arrow padding does not trick
+        the nav into thinking it still overflows after the reminder is closed.
+      */
+      navScrollShell.classList.add("nav-scroll-measuring");
+      navScrollShell.classList.add("no-scroll");
+      navScrollRegion.scrollLeft = 0;
+
+      void navScrollRegion.offsetWidth;
+
+      const bounds = getNavVisibleBounds();
+      const naturalContentWidth = getNavContentWidthFromChildren();
+      const contentIsTooWide = naturalContentWidth > bounds.width + tolerance;
+      const hasClippedItem = getVisibleNavChildren().some(function(child) {
         const childRect = child.getBoundingClientRect();
-        const targetElement = child.classList.contains("dropdown")
-          ? child.querySelector(".dropdown-toggle") || child
-          : child;
-        const targetRect = targetElement.getBoundingClientRect();
-        const targetTextIsClipped = targetElement.scrollWidth > targetElement.clientWidth + tolerance ||
-          targetElement.scrollWidth > targetRect.width + tolerance;
-        const childIsClippedByRegion = childRect.left < visibleLeft - tolerance ||
-          childRect.right > visibleRight + tolerance;
+        const targetElement = getNavItemTargetElement(child);
+        const targetTextIsClipped = targetElement
+          ? targetElement.scrollWidth > targetElement.clientWidth + tolerance
+          : false;
+        const childIsClippedByRegion = childRect.left < bounds.left - tolerance ||
+          childRect.right > bounds.right + tolerance;
 
         return targetTextIsClipped || childIsClippedByRegion;
       });
+
+      if (!hadNoScrollClass) {
+        navScrollShell.classList.remove("no-scroll");
+        navScrollRegion.scrollLeft = originalScrollLeft;
+      }
+
+      navScrollShell.classList.remove("nav-scroll-measuring");
+
+      return contentIsTooWide || hasClippedItem;
+    }
+
+    function navHasPartiallyHiddenItems() {
+      return measureNavOverflowWithoutScrollControls();
     }
 
     function updateNavScrollControls() {
@@ -2941,19 +2974,7 @@
         return;
       }
 
-      const naturalContentWidth = Math.max(
-        navScrollRegion.scrollWidth - getNavHorizontalPadding(),
-        getNavContentWidthFromChildren()
-      );
-      const measuredAvailableWidth = getNavAvailableWidth();
-      const availableWidth = measuredAvailableWidth > 0
-        ? measuredAvailableWidth
-        : Math.max(navScrollRegion.clientWidth - getNavHorizontalPadding(), 0);
-      const scrollWidthOverflow = navScrollRegion.scrollWidth > navScrollRegion.clientWidth + 2;
-      const hasPartialItemClipping = navHasPartiallyHiddenItems();
-      const hasOverflow = naturalContentWidth > availableWidth + 2 ||
-        scrollWidthOverflow ||
-        hasPartialItemClipping;
+      const hasOverflow = measureNavOverflowWithoutScrollControls();
 
       navScrollShell.classList.toggle("no-scroll", !hasOverflow);
 
@@ -2993,6 +3014,8 @@
         requestAnimationFrame(function() {
           updateNavScrollControls();
           setTimeout(updateNavScrollControls, 80);
+          setTimeout(updateNavScrollControls, 260);
+          setTimeout(updateNavScrollControls, 420);
         });
       });
     }
