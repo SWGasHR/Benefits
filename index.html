@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Benefits Project Portal</title>
+  <title>Benefits Project Portal Template</title>
   <link rel="icon" type="image/png" href="department.png">
   <link rel="preconnect" href="https://workapps.smartsheet.com">
   <link rel="dns-prefetch" href="https://workapps.smartsheet.com">
@@ -1112,6 +1112,7 @@
         <span class="nav-separator" aria-hidden="true">|</span>
 
         <a class="nav-item"
+           id="allHrPersonalTasksLink"
            href="https://workapps.smartsheet.com/app/wJm2VpWWq27w5cPQ5rc399qrFc"
            target="_blank"
            rel="noopener noreferrer">
@@ -1263,11 +1264,11 @@
 
     <a class="swgas-logo-link"
        id="departmentSharePointLink"
-       href="https://swgas.sharepoint.com/sites/Benefits"
+       href="#"
        target="_blank"
        rel="noopener noreferrer"
-       title="Benefits SharePoint">
-      <img id="departmentLogo" src="swgas.png" alt="Benefits logo" class="swgas-logo">
+       title="Department SharePoint">
+      <img id="departmentLogo" src="swgas.png" alt="Department logo" class="swgas-logo">
     </a>
   </div>
 
@@ -1364,17 +1365,42 @@
 
   <script>
     /* ==========================================================
-       EDIT THIS SECTION ONLY FOR TITLES, MAIN LINKS, AND PROJECTS
+       SHARED PORTAL SETTINGS
+       These stay the same for every department portal.
+       ========================================================== */
+
+    const SHARED_PORTAL_SETTINGS = {
+      faviconFileName: "department.png",
+      logoFileName: "swgas.png",
+      contactEmail: "Benjamin.Bell@swgas.com",
+      allHrPersonalTasksUrl: "https://workapps.smartsheet.com/app/wJm2VpWWq27w5cPQ5rc399qrFc",
+
+      supportLinks: {
+        projectCreationRequest: "https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7",
+        smartsheetSupport: "https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593",
+        jobAidMgr: "INSERT_JOB_AID_MGR_LINK_HERE",
+        jobAidDir: "INSERT_JOB_AID_DIR_LINK_HERE"
+      }
+    };
+
+    /* ==========================================================
+       DEPARTMENT PORTAL CONFIG
+       Edit this section for each department. Everything below this
+       section is reusable and should not need to change.
        ========================================================== */
 
     const PORTAL_CONFIG = {
       /*
-        BENEFITS PORTAL SETUP NOTES
-        1. The finalized reusable template has been applied to this portal.
-        2. To show a project in the Projects dropdown, set visible: true.
-        3. To hide a project without deleting it, set visible: false.
-        4. Keep id values lowercase with dashes only. Example: "open-enrollment-2026".
-        5. All HR Personal Tasks opens in a new tab and is intentionally not included below in views, so it will not preload as an iframe.
+        HOW TO USE THIS TEMPLATE
+        1. Change departmentName and departmentSharePointUrl.
+        2. Paste the department-specific Smartsheet published links under views.
+        3. Keep BAU first, then replace the five active project templates as needed.
+        4. Replace or rename the five archive templates when you need archived projects.
+        5. Set visible: true to show a project, or visible: false to keep it hidden.
+        6. Keep id values lowercase with dashes only. Example: "open-enrollment-2026".
+        7. Use "(Department Name)" in labels when you want the template to auto-fill the department name.
+        8. Active projects preload after the first page loads; archive projects do not preload.
+        9. All HR Personal Tasks opens in a new tab and is intentionally not preloaded as an iframe.
       */
 
       portalTitle: "Benefits Project Portal",
@@ -1382,17 +1408,6 @@
       departmentName: "Benefits",
 
       departmentSharePointUrl: "https://swgas.sharepoint.com/sites/Benefits",
-
-      logoFileName: "swgas.png",
-
-      contactEmail: "Benjamin.Bell@swgas.com",
-
-      supportLinks: {
-        projectCreationRequest: "https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7",
-        smartsheetSupport: "https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593",
-        jobAidMgr: "INSERT_SUPPORT_LINK_3_HERE",
-        jobAidDir: "INSERT_SUPPORT_LINK_4_HERE"
-      },
 
       defaultViewId: "home",
 
@@ -1420,6 +1435,11 @@
       },
 
       projects: [
+        /*
+          Keep BAU first. Then use the five project template slots below
+          for active department projects. Active projects are included in
+          the preload list after the first page loads.
+        */
         {
           id: "bau",
           label: "BAU",
@@ -1427,14 +1447,74 @@
           visible: true
         },
         {
-          id: "open-enrollment-2025",
+          id: "open enrollment 2025",
           label: "Open Enrollment 2025",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=7342cff8be1748dda31e3a6b696ded3a",
           visible: true
+        },
+        {
+          id: "project-template-2",
+          label: "Project Template 2",
+          embedSrc: "INSERT_PROJECT_TEMPLATE_2_EMBED_LINK_HERE",
+          visible: false
+        },
+        {
+          id: "project-template-3",
+          label: "Project Template 3",
+          embedSrc: "INSERT_PROJECT_TEMPLATE_3_EMBED_LINK_HERE",
+          visible: false
+        },
+        {
+          id: "project-template-4",
+          label: "Project Template 4",
+          embedSrc: "INSERT_PROJECT_TEMPLATE_4_EMBED_LINK_HERE",
+          visible: false
+        },
+        {
+          id: "project-template-5",
+          label: "Project Template 5",
+          embedSrc: "INSERT_PROJECT_TEMPLATE_5_EMBED_LINK_HERE",
+          visible: false
         }
       ],
 
-      archiveProjects: []
+      archiveProjects: [
+        /*
+          Archived project templates show in the Archive section when
+          visible is true. Archived projects intentionally do not preload;
+          they load only when selected from the Archive dropdown.
+        */
+        {
+          id: "archive-template-1",
+          label: "Archive Template 1",
+          embedSrc: "INSERT_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE",
+          visible: false
+        },
+        {
+          id: "archive-template-2",
+          label: "Archive Template 2",
+          embedSrc: "INSERT_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE",
+          visible: false
+        },
+        {
+          id: "archive-template-3",
+          label: "Archive Template 3",
+          embedSrc: "INSERT_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE",
+          visible: false
+        },
+        {
+          id: "archive-template-4",
+          label: "Archive Template 4",
+          embedSrc: "INSERT_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE",
+          visible: false
+        },
+        {
+          id: "archive-template-5",
+          label: "Archive Template 5",
+          embedSrc: "INSERT_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE",
+          visible: false
+        }
+      ]
     };
 
     /* ==========================================================
@@ -1465,6 +1545,8 @@
     const navScrollRight = document.getElementById("navScrollRight");
     const navReminderSlot = document.getElementById("navReminderSlot");
     const topNav = document.querySelector(".top-nav");
+    const portalFavicon = document.querySelector('link[rel="icon"]');
+    const allHrPersonalTasksLink = document.getElementById("allHrPersonalTasksLink");
     const departmentSharePointLink = document.getElementById("departmentSharePointLink");
     const departmentLogo = document.getElementById("departmentLogo");
     const projectCreationRequestLink = document.getElementById("projectCreationRequestLink");
@@ -1627,12 +1709,11 @@
         });
       });
 
-      getVisibleArchiveProjects().forEach(function(project) {
-        routes.push({
-          type: "project",
-          id: project.id
-        });
-      });
+      /*
+        Important: archived projects are intentionally excluded from the
+        preload list. They remain clickable from the Archive section and
+        load only when selected.
+      */
 
       return routes;
     }
@@ -2417,7 +2498,7 @@
         event.stopPropagation();
       }
 
-      const contactEmail = (PORTAL_CONFIG.contactEmail || "").trim();
+      const contactEmail = getPortalContactEmail();
 
       if (!contactEmail || isPlaceholderLink(contactEmail)) {
         alert("The portal contact email has not been configured yet.");
@@ -2469,6 +2550,17 @@
       }
     }
 
+    function getSharedSupportLink(linkKey) {
+      const departmentSpecificLinks = PORTAL_CONFIG.supportLinks || {};
+      const sharedLinks = SHARED_PORTAL_SETTINGS.supportLinks || {};
+
+      return departmentSpecificLinks[linkKey] || sharedLinks[linkKey] || "";
+    }
+
+    function getPortalContactEmail() {
+      return (SHARED_PORTAL_SETTINGS.contactEmail || "").trim();
+    }
+
     function applyConfigToNavigation() {
       const resolvedDepartmentName = replaceDepartmentName(PORTAL_CONFIG.departmentName || "Department");
       const resolvedPortalTitle = replaceDepartmentName(PORTAL_CONFIG.portalTitle || resolvedDepartmentName + " Project Portal");
@@ -2476,25 +2568,30 @@
       document.title = resolvedPortalTitle;
       projectDropdownLabel.textContent = resolvedDepartmentName + " Projects";
 
+      if (portalFavicon && SHARED_PORTAL_SETTINGS.faviconFileName) {
+        portalFavicon.href = SHARED_PORTAL_SETTINGS.faviconFileName;
+      }
+
+      updateConfiguredLink(allHrPersonalTasksLink, SHARED_PORTAL_SETTINGS.allHrPersonalTasksUrl);
       updateConfiguredLink(departmentSharePointLink, PORTAL_CONFIG.departmentSharePointUrl);
 
       if (departmentSharePointLink) {
         departmentSharePointLink.title = resolvedDepartmentName + " SharePoint";
       }
 
-      if (departmentLogo && PORTAL_CONFIG.logoFileName) {
-        departmentLogo.src = PORTAL_CONFIG.logoFileName;
+      if (departmentLogo && SHARED_PORTAL_SETTINGS.logoFileName) {
+        departmentLogo.src = SHARED_PORTAL_SETTINGS.logoFileName;
         departmentLogo.alt = resolvedDepartmentName + " logo";
       }
 
-      updateConfiguredLink(projectCreationRequestLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.projectCreationRequest);
-      updateConfiguredLink(smartsheetSupportLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.smartsheetSupport);
-      updateConfiguredLink(jobAidMgrLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.jobAidMgr);
-      updateConfiguredLink(jobAidDirLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.jobAidDir);
-      updateConfiguredLink(placeholderProjectCreationLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.projectCreationRequest);
+      updateConfiguredLink(projectCreationRequestLink, getSharedSupportLink("projectCreationRequest"));
+      updateConfiguredLink(smartsheetSupportLink, getSharedSupportLink("smartsheetSupport"));
+      updateConfiguredLink(jobAidMgrLink, getSharedSupportLink("jobAidMgr"));
+      updateConfiguredLink(jobAidDirLink, getSharedSupportLink("jobAidDir"));
+      updateConfiguredLink(placeholderProjectCreationLink, getSharedSupportLink("projectCreationRequest"));
 
       if (placeholderEmailLink) {
-        const contactEmail = (PORTAL_CONFIG.contactEmail || "").trim();
+        const contactEmail = getPortalContactEmail();
         placeholderEmailLink.href = buildMailtoLink(contactEmail);
         placeholderEmailLink.textContent = contactEmail || "INSERT_CONTACT_EMAIL_HERE";
       }
