@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Benfits Project Portal</title>
+  <title>Benefits Project Portal</title>
   <link rel="icon" type="image/png" href="department.png">
   <link rel="preconnect" href="https://workapps.smartsheet.com">
   <link rel="dns-prefetch" href="https://workapps.smartsheet.com">
@@ -1413,9 +1413,9 @@
 
       portalTitle: "Benefits Project Portal",
 
-      departmentName: "Benefits",
+      departmentName: "INSERT_DEPARTMENT_NAME_HERE",
 
-      departmentSharePointUrl: "https://swgas.sharepoint.com/sites/Benefits",
+      departmentSharePointUrl: "INSERT_DEPARTMENT_SHAREPOINT_URL_HERE",
 
       defaultViewId: "home",
 
@@ -2931,8 +2931,8 @@
       const originalScrollLeft = navScrollRegion.scrollLeft;
 
       /*
-        Measure in the no-scroll state so the 46px arrow padding does not trick
-        the nav into thinking it still overflows after the reminder is closed.
+        Measure in the true no-scroll state so the 46px arrow padding does not
+        trick the nav into showing arrows when the full navigation already fits.
       */
       navScrollShell.classList.add("nav-scroll-measuring");
       navScrollShell.classList.add("no-scroll");
@@ -2969,6 +2969,44 @@
       return measureNavOverflowWithoutScrollControls();
     }
 
+    function getNavMaxScrollLeft() {
+      if (!navScrollRegion) {
+        return 0;
+      }
+
+      return Math.max(navScrollRegion.scrollWidth - navScrollRegion.clientWidth, 0);
+    }
+
+    function updateNavArrowStates() {
+      if (!navScrollRegion || !navScrollShell) {
+        return;
+      }
+
+      if (navScrollShell.classList.contains("no-scroll")) {
+        if (navScrollLeft) {
+          navScrollLeft.disabled = true;
+        }
+
+        if (navScrollRight) {
+          navScrollRight.disabled = true;
+        }
+
+        return;
+      }
+
+      const maxScrollLeft = getNavMaxScrollLeft();
+      const atStart = navScrollRegion.scrollLeft <= 2;
+      const atEnd = navScrollRegion.scrollLeft >= maxScrollLeft - 2;
+
+      if (navScrollLeft) {
+        navScrollLeft.disabled = atStart;
+      }
+
+      if (navScrollRight) {
+        navScrollRight.disabled = atEnd;
+      }
+    }
+
     function updateNavScrollControls() {
       if (!navScrollRegion || !navScrollShell) {
         return;
@@ -2994,18 +3032,7 @@
 
       /* Force the browser to apply the has-scroll padding before reading the scroll limits. */
       void navScrollRegion.offsetWidth;
-
-      const maxScrollLeft = Math.max(navScrollRegion.scrollWidth - navScrollRegion.clientWidth, 0);
-      const atStart = navScrollRegion.scrollLeft <= 2;
-      const atEnd = navScrollRegion.scrollLeft >= maxScrollLeft - 2;
-
-      if (navScrollLeft) {
-        navScrollLeft.disabled = atStart;
-      }
-
-      if (navScrollRight) {
-        navScrollRight.disabled = atEnd;
-      }
+      updateNavArrowStates();
     }
 
     function updateNavScrollControlsSoon() {
@@ -3021,37 +3048,45 @@
     }
 
     function scrollNavTopics(direction) {
-      if (!navScrollRegion) {
+      if (!navScrollRegion || !navScrollShell) {
         return;
       }
 
-      const regionRect = navScrollRegion.getBoundingClientRect();
-      const tolerance = 6;
-      const children = getVisibleNavChildren();
-      const targetChild = direction > 0
-        ? children.find(function(child) {
-            return child.getBoundingClientRect().right > regionRect.right - tolerance;
-          })
-        : children.slice().reverse().find(function(child) {
-            return child.getBoundingClientRect().left < regionRect.left + tolerance;
-          });
+      /*
+        Do not use scrollIntoView here. On a flex-based nav it can make tiny
+        "nearest item" jumps and can prevent the user from reaching the full
+        scroll range. A direct scrollLeft target is much more reliable.
+      */
+      navScrollShell.classList.remove("no-scroll");
+      void navScrollRegion.offsetWidth;
 
-      if (targetChild && typeof targetChild.scrollIntoView === "function") {
-        targetChild.scrollIntoView({
-          behavior: "smooth",
-          block: "nearest",
-          inline: direction > 0 ? "start" : "end"
-        });
-      } else {
-        const scrollAmount = Math.max(Math.round(navScrollRegion.clientWidth * 0.72), 220);
+      const maxScrollLeft = getNavMaxScrollLeft();
 
-        navScrollRegion.scrollBy({
-          left: direction * scrollAmount,
-          behavior: "smooth"
-        });
+      if (maxScrollLeft <= 0) {
+        updateNavScrollControls();
+        return;
       }
 
-      setTimeout(updateNavScrollControls, 260);
+      const currentScrollLeft = navScrollRegion.scrollLeft;
+      const usableWidth = Math.max(navScrollRegion.clientWidth - getNavHorizontalPadding(), 0);
+      const scrollAmount = Math.max(Math.round(usableWidth * 0.82), 260);
+      let targetScrollLeft = direction > 0
+        ? Math.min(currentScrollLeft + scrollAmount, maxScrollLeft)
+        : Math.max(currentScrollLeft - scrollAmount, 0);
+
+      /* If the remaining movement is tiny, finish the trip to the end/start. */
+      if (Math.abs(targetScrollLeft - currentScrollLeft) < 8) {
+        targetScrollLeft = direction > 0 ? maxScrollLeft : 0;
+      }
+
+      navScrollRegion.scrollTo({
+        left: targetScrollLeft,
+        behavior: "smooth"
+      });
+
+      setTimeout(updateNavArrowStates, 80);
+      setTimeout(updateNavArrowStates, 260);
+      setTimeout(updateNavArrowStates, 520);
       setTimeout(positionOpenDropdownMenus, 280);
     }
 
@@ -3112,7 +3147,7 @@
     if (navScrollRegion) {
       navScrollRegion.addEventListener("scroll", function() {
         positionOpenDropdownMenus();
-        updateNavScrollControls();
+        updateNavArrowStates();
       });
     }
 
