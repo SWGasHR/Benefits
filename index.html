@@ -311,82 +311,6 @@
       font-weight: 700;
     }
 
-    .dropdown-menu a.request-access-link {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 8px 12px 2px 12px;
-      padding: 11px 14px;
-      border-radius: 10px;
-      background: linear-gradient(135deg, #252763 0%, #3d4294 100%);
-      color: #ffffff;
-      font-weight: 800;
-      text-align: center;
-      box-shadow: 0 6px 16px rgba(37, 39, 99, 0.30);
-      border: 1px solid rgba(37, 39, 99, 0.18);
-      letter-spacing: 0.1px;
-      transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
-    }
-
-    .dropdown-menu a.request-access-link:hover,
-    .dropdown-menu a.request-access-link:focus {
-      background: linear-gradient(135deg, #1d1f50 0%, #30357e 100%);
-      color: #ffffff;
-      transform: translateY(-1px);
-      box-shadow: 0 9px 20px rgba(37, 39, 99, 0.38);
-      outline: none;
-    }
-
-    .request-access-content {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-    }
-
-    .request-access-icon {
-      width: 14px;
-      height: 14px;
-      flex: 0 0 14px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2.2;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .request-access-arrow-wrap {
-      width: 21px;
-      height: 21px;
-      flex: 0 0 21px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-left: 2px;
-      border-radius: 999px;
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.22);
-      transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-    }
-
-    .request-access-arrow {
-      width: 13px;
-      height: 13px;
-      fill: none;
-      stroke: currentColor;
-      stroke-width: 2.4;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .dropdown-menu a.request-access-link:hover .request-access-arrow-wrap,
-    .dropdown-menu a.request-access-link:focus .request-access-arrow-wrap {
-      transform: translateX(3px);
-      background: rgba(255,255,255,0.24);
-      border-color: rgba(255,255,255,0.34);
-    }
-
     .dropdown-header {
       padding: 10px 16px 6px 16px;
       font-size: 12px;
@@ -402,16 +326,106 @@
       margin: 8px 0;
     }
 
+    /* --- SUPPORT REQUEST ACCESS BUTTON --- */
+    .dropdown-menu a.request-access-button {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      margin: 10px 12px 4px 12px;
+      padding: 10px 12px;
+      min-height: 46px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #252763 0%, #1d1f50 100%);
+      color: #ffffff;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.1px;
+      box-shadow: 0 7px 16px rgba(37, 39, 99, 0.24);
+      border: 1px solid rgba(255,255,255,0.18);
+      box-sizing: border-box;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .dropdown-menu a.request-access-button:hover,
+    .dropdown-menu a.request-access-button:focus {
+      background: linear-gradient(135deg, #303381 0%, #252763 100%);
+      color: #ffffff;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 22px rgba(37, 39, 99, 0.30);
+      outline: none;
+    }
+
+    .request-access-left {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .request-access-left > span:last-child {
+      line-height: 1;
+      text-align: center;
+      min-width: 0;
+    }
+
+    .request-access-icon {
+      width: 22px;
+      height: 22px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.16);
+      flex: 0 0 auto;
+    }
+
+    .request-access-icon svg {
+      width: 13px;
+      height: 13px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.1;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .request-access-arrow {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255,255,255,0.16);
+      flex: 0 0 auto;
+      transition: transform 0.18s ease, background 0.18s ease;
+    }
+
+    .request-access-arrow svg {
+      width: 14px;
+      height: 14px;
+      display: block;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .dropdown-menu a.request-access-button:hover .request-access-arrow,
+    .dropdown-menu a.request-access-button:focus .request-access-arrow {
+      transform: translateX(2px);
+      background: rgba(255,255,255,0.24);
+    }
+
     .caret {
       font-size: 11px;
       line-height: 1;
     }
 
-    .nav-spacer {
-      flex: 1;
-    }
-
-    /* --- TOP NAV MESSAGE POP-UP --- */
     .nav-reminder-slot {
       flex: 0 1 clamp(245px, 28vw, 390px);
       min-width: 245px;
@@ -478,10 +492,6 @@
       white-space: normal;
     }
 
-    .nav-refresh-popover strong {
-      font-weight: 800;
-    }
-
     .nav-refresh-close {
       position: absolute;
       top: -8px;
@@ -516,7 +526,6 @@
       outline: none;
     }
 
-
     .nav-refresh-close svg {
       width: 9px;
       height: 9px;
@@ -550,8 +559,6 @@
       width: auto;
       display: block;
     }
-
-
 
     /* --- CENTER REMINDER BETWEEN SUPPORT AND LOGO --- */
     .top-nav.reminder-visible .nav-scroll-shell.no-scroll {
@@ -692,7 +699,6 @@
       color: #252763;
     }
 
-
     .archive-empty-message {
       padding: 10px 16px 10px 32px;
       color: #777;
@@ -814,8 +820,6 @@
     .view-only-note strong {
       font-weight: 700;
     }
-
-
 
     /* --- IFRAME AREA --- */
     .iframe-wrap {
@@ -1178,37 +1182,46 @@
             Support <span class="caret">▼</span>
           </div>
           <div class="dropdown-menu">
-            <a href="https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7" target="_blank" rel="noopener noreferrer">
+            <a id="projectCreationRequestLink"
+               href="https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7"
+               target="_blank"
+               rel="noopener noreferrer">
               Smartsheet Project Creation Request
             </a>
 
-            <a href="https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593" target="_blank" rel="noopener noreferrer">
+            <a id="smartsheetSupportLink"
+               href="https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593"
+               target="_blank"
+               rel="noopener noreferrer">
               Smartsheet Support
             </a>
 
             <div class="dropdown-divider"></div>
 
-            <a href="INSERT_SUPPORT_LINK_3_HERE">Job Aid (MGR)</a>
-            <a href="INSERT_SUPPORT_LINK_4_HERE">Job Aid (DIR)</a>
+            <a id="jobAidMgrLink" href="INSERT_SUPPORT_LINK_3_HERE">Job Aid (MGR)</a>
+            <a id="jobAidDirLink" href="INSERT_SUPPORT_LINK_4_HERE">Job Aid (DIR)</a>
 
             <div class="dropdown-divider"></div>
 
-            <a id="accessRequestLink"
-               class="request-access-link"
-               href="javascript:void(0)"
-               onclick="openAccessRequestEmail(event)">
-              <span class="request-access-content">
-                <svg class="request-access-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                  <path d="M4 6h16c.6 0 1 .4 1 1v10c0 .6-.4 1-1 1H4c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1z"></path>
-                  <path d="m4 8 8 5 8-5"></path>
-                </svg>
-                <span>Request Access</span>
-                <span class="request-access-arrow-wrap" aria-hidden="true">
-                  <svg class="request-access-arrow" viewBox="0 0 20 20" focusable="false">
-                    <path d="M4 10h10"></path>
-                    <path d="m10 6 4 4-4 4"></path>
+            <a id="requestAccessLink"
+               class="request-access-button"
+               href="#"
+               onclick="openAccessRequestEmail(event)"
+               aria-label="Request access by email">
+              <span class="request-access-left">
+                <span class="request-access-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" focusable="false">
+                    <rect x="4" y="6" width="16" height="12" rx="2"></rect>
+                    <path d="M4.5 7.5 12 13l7.5-5.5"></path>
                   </svg>
                 </span>
+                <span>Request Access</span>
+              </span>
+              <span class="request-access-arrow" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false">
+                  <path d="M5 12h12"></path>
+                  <path d="m13 7 5 5-5 5"></path>
+                </svg>
               </span>
             </a>
           </div>
@@ -1240,11 +1253,12 @@
     </div>
 
     <a class="swgas-logo-link"
+       id="departmentSharePointLink"
        href="https://swgas.sharepoint.com/sites/Benefits"
        target="_blank"
        rel="noopener noreferrer"
-       title="Southwest Gas SharePoint">
-      <img src="swgas.png" alt="Southwest Gas" class="swgas-logo">
+       title="Benefits SharePoint">
+      <img id="departmentLogo" src="swgas.png" alt="Benefits logo" class="swgas-logo">
     </a>
   </div>
 
@@ -1272,7 +1286,6 @@
     To make updates, open the specific project sheet from the Projects menu.
   </div>
 
-
   <div class="iframe-wrap">
     <div class="iframe-pool" id="iframePool"></div>
 
@@ -1291,11 +1304,13 @@
         <p>
           Please reach out to
           <a class="placeholder-action-link"
+             id="placeholderEmailLink"
              href="mailto:Benjamin.Bell@swgas.com?subject=Smartsheet%20Portal%20Link%20Issue">
             Benjamin.Bell@swgas.com
           </a>
           to fix this link, or use the
           <a class="placeholder-action-link"
+             id="placeholderProjectCreationLink"
              href="https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7"
              target="_blank"
              rel="noopener noreferrer">
@@ -1344,9 +1359,31 @@
        ========================================================== */
 
     const PORTAL_CONFIG = {
+      /*
+        BENEFITS PORTAL SETUP NOTES
+        1. The finalized reusable template has been applied to this portal.
+        2. To show a project in the Projects dropdown, set visible: true.
+        3. To hide a project without deleting it, set visible: false.
+        4. Keep id values lowercase with dashes only. Example: "open-enrollment-2026".
+        5. All HR Personal Tasks opens in a new tab and is intentionally not included below in views, so it will not preload as an iframe.
+      */
+
       portalTitle: "Benefits Project Portal",
 
       departmentName: "Benefits",
+
+      departmentSharePointUrl: "https://swgas.sharepoint.com/sites/Benefits",
+
+      logoFileName: "swgas.png",
+
+      contactEmail: "Benjamin.Bell@swgas.com",
+
+      supportLinks: {
+        projectCreationRequest: "https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7",
+        smartsheetSupport: "https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593",
+        jobAidMgr: "INSERT_SUPPORT_LINK_3_HERE",
+        jobAidDir: "INSERT_SUPPORT_LINK_4_HERE"
+      },
 
       defaultViewId: "home",
 
@@ -1377,12 +1414,14 @@
         {
           id: "bau",
           label: "BAU",
-          embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=d575dd0772a144f3b5e57aa51803d403"
+          embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=d575dd0772a144f3b5e57aa51803d403",
+          visible: true
         },
         {
           id: "open-enrollment-2025",
           label: "Open Enrollment 2025",
-          embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=7342cff8be1748dda31e3a6b696ded3a"
+          embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=7342cff8be1748dda31e3a6b696ded3a",
+          visible: true
         }
       ],
 
@@ -1417,6 +1456,15 @@
     const navScrollRight = document.getElementById("navScrollRight");
     const navReminderSlot = document.getElementById("navReminderSlot");
     const topNav = document.querySelector(".top-nav");
+    const departmentSharePointLink = document.getElementById("departmentSharePointLink");
+    const departmentLogo = document.getElementById("departmentLogo");
+    const projectCreationRequestLink = document.getElementById("projectCreationRequestLink");
+    const smartsheetSupportLink = document.getElementById("smartsheetSupportLink");
+    const jobAidMgrLink = document.getElementById("jobAidMgrLink");
+    const jobAidDirLink = document.getElementById("jobAidDirLink");
+    const requestAccessLink = document.getElementById("requestAccessLink");
+    const placeholderEmailLink = document.getElementById("placeholderEmailLink");
+    const placeholderProjectCreationLink = document.getElementById("placeholderProjectCreationLink");
 
     let projectModeActive = false;
     let pendingNavigationAction = null;
@@ -1455,8 +1503,11 @@
       one time after a likely Smartsheet sign-in return so every iframe reloads
       with the new signed-in session.
     */
-    const AUTH_RETURN_REFRESH_DONE_KEY = "benefitsPortalSmartsheetAuthRefreshDone";
-    const AUTH_RETURN_PENDING_KEY = "benefitsPortalPossibleSmartsheetAuthReturn";
+    const AUTH_STORAGE_PREFIX = String(PORTAL_CONFIG.departmentName || "department")
+      .replace(/[^a-z0-9]/gi, "")
+      .toLowerCase() || "department";
+    const AUTH_RETURN_REFRESH_DONE_KEY = AUTH_STORAGE_PREFIX + "PortalSmartsheetAuthRefreshDone";
+    const AUTH_RETURN_PENDING_KEY = AUTH_STORAGE_PREFIX + "PortalPossibleSmartsheetAuthReturn";
     const AUTH_RETURN_MIN_AWAY_MS = 5000;
     const AUTH_RETURN_MAX_AWAY_MS = 20 * 60 * 1000;
     const IFRAME_INTERACTION_WINDOW_MS = 45000;
@@ -1485,52 +1536,6 @@
       }
 
       return text.split("(Department Name)").join(PORTAL_CONFIG.departmentName);
-    }
-
-    function openAccessRequestEmail(event) {
-      if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      const route = parseHashRoute();
-      const embedData = getEmbedDataForRoute(route);
-
-      const portalTitle = PORTAL_CONFIG.portalTitle || document.title || "Smartsheet Project Portal";
-      const departmentName = PORTAL_CONFIG.departmentName || "Unknown Department";
-      const currentPage = embedData && embedData.label
-        ? replaceDepartmentName(embedData.label)
-        : "Unknown Page/View";
-
-      const currentUrl = window.location.href;
-      const submittedAt = new Date().toLocaleString();
-
-      const subject = encodeURIComponent("Access Request - " + portalTitle);
-
-      const body = encodeURIComponent(
-        "Hello Ben,\n\n" +
-        "I am requesting access to the Smartsheet portal page listed below.\n\n" +
-        "Portal: " + portalTitle + "\n" +
-        "Department: " + departmentName + "\n" +
-        "Current Page/View: " + currentPage + "\n" +
-        "Page URL: " + currentUrl + "\n" +
-        "Request Date/Time: " + submittedAt + "\n\n" +
-        "Reason for access, optional:\n" +
-        "[Please type reason here]\n\n" +
-        "Thank you!"
-      );
-
-      const mailtoLink =
-        "mailto:Benjamin.Bell@swgas.com" +
-        "?subject=" + subject +
-        "&body=" + body;
-
-      suppressUnsavedBeforeUnload = true;
-      window.location.href = mailtoLink;
-
-      setTimeout(function() {
-        suppressUnsavedBeforeUnload = false;
-      }, 1500);
     }
 
     function routeKey(route) {
@@ -1606,7 +1611,14 @@
         });
       });
 
-      PORTAL_CONFIG.projects.forEach(function(project) {
+      getVisibleProjects().forEach(function(project) {
+        routes.push({
+          type: "project",
+          id: project.id
+        });
+      });
+
+      getVisibleArchiveProjects().forEach(function(project) {
         routes.push({
           type: "project",
           id: project.id
@@ -2108,8 +2120,20 @@
       }
     }
 
+    function isPortalItemVisible(item) {
+      return item && item.visible !== false;
+    }
+
+    function getVisibleProjects() {
+      return (PORTAL_CONFIG.projects || []).filter(isPortalItemVisible);
+    }
+
+    function getVisibleArchiveProjects() {
+      return (PORTAL_CONFIG.archiveProjects || []).filter(isPortalItemVisible);
+    }
+
     function getProjectById(projectId) {
-      const allProjects = (PORTAL_CONFIG.projects || []).concat(PORTAL_CONFIG.archiveProjects || []);
+      const allProjects = getVisibleProjects().concat(getVisibleArchiveProjects());
 
       return allProjects.find(function(project) {
         return project.id === projectId;
@@ -2266,11 +2290,11 @@
     function renderProjectLinks() {
       projectLinksContainer.innerHTML = "";
 
-      (PORTAL_CONFIG.projects || []).forEach(function(project) {
+      getVisibleProjects().forEach(function(project) {
         projectLinksContainer.appendChild(createProjectLink(project, false));
       });
 
-      const archiveProjects = PORTAL_CONFIG.archiveProjects || [];
+      const archiveProjects = getVisibleArchiveProjects();
       const archiveDivider = document.createElement("div");
       const archiveButton = document.createElement("button");
       const archiveLabel = document.createElement("span");
@@ -2368,12 +2392,103 @@
       noProjectResults.style.display = visibleCount === 0 ? "block" : "none";
     }
 
-    function applyConfigToNavigation() {
-      if (PORTAL_CONFIG.portalTitle && PORTAL_CONFIG.portalTitle.trim() !== "") {
-        document.title = PORTAL_CONFIG.portalTitle;
+    function buildMailtoLink(emailAddress) {
+      const cleanEmail = (emailAddress || "").trim();
+
+      if (!cleanEmail || isPlaceholderLink(cleanEmail)) {
+        return "INSERT_CONTACT_EMAIL_HERE";
       }
 
-      projectDropdownLabel.textContent = PORTAL_CONFIG.departmentName + " Projects";
+      return "mailto:" + cleanEmail + "?subject=Smartsheet%20Portal%20Link%20Issue";
+    }
+
+    function openAccessRequestEmail(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      const contactEmail = (PORTAL_CONFIG.contactEmail || "").trim();
+
+      if (!contactEmail || isPlaceholderLink(contactEmail)) {
+        alert("The portal contact email has not been configured yet.");
+        return;
+      }
+
+      const route = parseHashRoute() || defaultRoute();
+      const embedData = getEmbedDataForRoute(route);
+      const portalTitle = replaceDepartmentName(PORTAL_CONFIG.portalTitle || document.title || "Smartsheet Project Portal");
+      const departmentName = replaceDepartmentName(PORTAL_CONFIG.departmentName || "Unknown Department");
+      const currentPage = embedData && embedData.label
+        ? replaceDepartmentName(embedData.label)
+        : "Unknown Page/View";
+      const currentUrl = window.location.href;
+      const submittedAt = new Date().toLocaleString();
+      const subject = encodeURIComponent("Access Request - " + portalTitle);
+      const body = encodeURIComponent(
+        "Hello Ben,\n\n" +
+        "I am requesting access to the Smartsheet portal page listed below.\n\n" +
+        "Portal: " + portalTitle + "\n" +
+        "Department: " + departmentName + "\n" +
+        "Current Page/View: " + currentPage + "\n" +
+        "Page URL: " + currentUrl + "\n" +
+        "Request Date/Time: " + submittedAt + "\n\n" +
+        "Reason for access, optional:\n" +
+        "[Please type reason here]\n\n" +
+        "Thank you!"
+      );
+
+      suppressUnsavedBeforeUnload = true;
+      window.location.href = "mailto:" + contactEmail + "?subject=" + subject + "&body=" + body;
+
+      setTimeout(function() {
+        suppressUnsavedBeforeUnload = false;
+      }, 1500);
+    }
+
+    function updateConfiguredLink(linkElement, href, labelText) {
+      if (!linkElement) {
+        return;
+      }
+
+      if (href) {
+        linkElement.href = href;
+      }
+
+      if (labelText) {
+        linkElement.textContent = labelText;
+      }
+    }
+
+    function applyConfigToNavigation() {
+      const resolvedDepartmentName = replaceDepartmentName(PORTAL_CONFIG.departmentName || "Department");
+      const resolvedPortalTitle = replaceDepartmentName(PORTAL_CONFIG.portalTitle || resolvedDepartmentName + " Project Portal");
+
+      document.title = resolvedPortalTitle;
+      projectDropdownLabel.textContent = resolvedDepartmentName + " Projects";
+
+      updateConfiguredLink(departmentSharePointLink, PORTAL_CONFIG.departmentSharePointUrl);
+
+      if (departmentSharePointLink) {
+        departmentSharePointLink.title = resolvedDepartmentName + " SharePoint";
+      }
+
+      if (departmentLogo && PORTAL_CONFIG.logoFileName) {
+        departmentLogo.src = PORTAL_CONFIG.logoFileName;
+        departmentLogo.alt = resolvedDepartmentName + " logo";
+      }
+
+      updateConfiguredLink(projectCreationRequestLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.projectCreationRequest);
+      updateConfiguredLink(smartsheetSupportLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.smartsheetSupport);
+      updateConfiguredLink(jobAidMgrLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.jobAidMgr);
+      updateConfiguredLink(jobAidDirLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.jobAidDir);
+      updateConfiguredLink(placeholderProjectCreationLink, PORTAL_CONFIG.supportLinks && PORTAL_CONFIG.supportLinks.projectCreationRequest);
+
+      if (placeholderEmailLink) {
+        const contactEmail = (PORTAL_CONFIG.contactEmail || "").trim();
+        placeholderEmailLink.href = buildMailtoLink(contactEmail);
+        placeholderEmailLink.textContent = contactEmail || "INSERT_CONTACT_EMAIL_HERE";
+      }
 
       document.querySelectorAll(".portal-view-link").forEach(function(link) {
         const viewId = link.getAttribute("data-view-id");
@@ -2549,7 +2664,14 @@
       const isPortalViewLink = clickedLink.classList.contains("portal-view-link");
       const isProjectViewLink = clickedLink.classList.contains("project-view-link");
       const isPlaceholderActionLink = clickedLink.classList.contains("placeholder-action-link");
+      const isRequestAccessLink = clickedLink.id === "requestAccessLink";
       const href = clickedLink.getAttribute("href");
+
+      if (isRequestAccessLink) {
+        event.preventDefault();
+        openAccessRequestEmail(event);
+        return;
+      }
 
       if (isPlaceholderActionLink) {
         return;
