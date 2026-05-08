@@ -174,7 +174,7 @@
     }
 
     .nav-scroll-shell.no-scroll {
-      overflow: visible;
+      overflow: hidden;
     }
 
     .nav-scroll-shell.no-scroll::before,
@@ -570,13 +570,14 @@
 
     /* --- CENTER REMINDER BETWEEN SUPPORT AND LOGO --- */
     .top-nav.reminder-visible .nav-scroll-shell.no-scroll {
-      flex: 0 1 auto;
-      max-width: 100%;
+      flex: 1 1 auto;
+      min-width: 0;
+      max-width: none;
     }
 
     .top-nav.reminder-visible .nav-scroll-shell.no-scroll .nav-scroll-region {
-      flex: 0 0 auto;
-      width: auto;
+      flex: 1 1 auto;
+      width: 100%;
       max-width: 100%;
     }
 
@@ -2745,42 +2746,85 @@
       return paddingLeft + paddingRight;
     }
 
+    function getVisibleNavChildren() {
+      if (!navScrollRegion) {
+        return [];
+      }
+
+      return Array.from(navScrollRegion.children).filter(function(child) {
+        const childStyles = window.getComputedStyle(child);
+
+        return childStyles.display !== "none" && childStyles.visibility !== "hidden";
+      });
+    }
+
     function getNavContentWidthFromChildren() {
       if (!navScrollRegion) {
         return 0;
       }
 
-      return Array.from(navScrollRegion.children).reduce(function(totalWidth, child) {
+      return getVisibleNavChildren().reduce(function(totalWidth, child) {
         const childStyles = window.getComputedStyle(child);
-
-        if (childStyles.display === "none" || childStyles.visibility === "hidden") {
-          return totalWidth;
-        }
-
-        const childRect = child.getBoundingClientRect();
         const marginLeft = parseFloat(childStyles.marginLeft) || 0;
         const marginRight = parseFloat(childStyles.marginRight) || 0;
-        const naturalWidth = Math.max(child.scrollWidth || 0, childRect.width || 0);
+        const targetElement = child.classList.contains("dropdown")
+          ? child.querySelector(".dropdown-toggle") || child
+          : child;
+        const targetStyles = window.getComputedStyle(targetElement);
+        const targetPaddingLeft = parseFloat(targetStyles.paddingLeft) || 0;
+        const targetPaddingRight = parseFloat(targetStyles.paddingRight) || 0;
+        const targetBorderLeft = parseFloat(targetStyles.borderLeftWidth) || 0;
+        const targetBorderRight = parseFloat(targetStyles.borderRightWidth) || 0;
+        const targetNaturalWidth = targetElement.scrollWidth + targetPaddingLeft + targetPaddingRight + targetBorderLeft + targetBorderRight;
+        const childNaturalWidth = Math.max(child.scrollWidth || 0, child.offsetWidth || 0, targetNaturalWidth || 0);
 
-        return totalWidth + naturalWidth + marginLeft + marginRight;
+        return totalWidth + childNaturalWidth + marginLeft + marginRight;
       }, 0);
     }
 
+    function getNavAvailableWidth() {
+      if (!navScrollShell || !navScrollRegion) {
+        return 0;
+      }
+
+      const shellRect = navScrollShell.getBoundingClientRect();
+      const regionRect = navScrollRegion.getBoundingClientRect();
+      const topNavRect = topNav ? topNav.getBoundingClientRect() : null;
+      const rightBoundaryCandidates = [shellRect.right, regionRect.right];
+
+      if (topNavRect) {
+        rightBoundaryCandidates.push(topNavRect.right);
+      }
+
+      if (navReminderSlot && !navReminderSlot.classList.contains("collapsed")) {
+        rightBoundaryCandidates.push(navReminderSlot.getBoundingClientRect().left - 6);
+      }
+
+      if (departmentSharePointLink) {
+        rightBoundaryCandidates.push(departmentSharePointLink.getBoundingClientRect().left - 6);
+      }
+
+      const visibleLeft = Math.max(shellRect.left, regionRect.left, topNavRect ? topNavRect.left : shellRect.left);
+      const visibleRight = Math.min.apply(null, rightBoundaryCandidates.filter(function(value) {
+        return Number.isFinite(value) && value > visibleLeft;
+      }));
+
+      return Math.max(Math.floor(visibleRight - visibleLeft - getNavHorizontalPadding()), 0);
+    }
+
     function navHasPartiallyHiddenItems() {
-      if (!navScrollRegion) {
+      if (!navScrollShell || !navScrollRegion) {
         return false;
       }
 
+      const shellRect = navScrollShell.getBoundingClientRect();
       const regionRect = navScrollRegion.getBoundingClientRect();
+      const topNavRect = topNav ? topNav.getBoundingClientRect() : null;
       const tolerance = 2;
+      const visibleLeft = Math.max(shellRect.left, regionRect.left, topNavRect ? topNavRect.left : shellRect.left);
+      const visibleRight = visibleLeft + getNavAvailableWidth() + getNavHorizontalPadding();
 
-      return Array.from(navScrollRegion.children).some(function(child) {
-        const childStyles = window.getComputedStyle(child);
-
-        if (childStyles.display === "none" || childStyles.visibility === "hidden") {
-          return false;
-        }
-
+      return getVisibleNavChildren().some(function(child) {
         const childRect = child.getBoundingClientRect();
         const targetElement = child.classList.contains("dropdown")
           ? child.querySelector(".dropdown-toggle") || child
@@ -2788,8 +2832,8 @@
         const targetRect = targetElement.getBoundingClientRect();
         const targetTextIsClipped = targetElement.scrollWidth > targetElement.clientWidth + tolerance ||
           targetElement.scrollWidth > targetRect.width + tolerance;
-        const childIsClippedByRegion = childRect.left < regionRect.left - tolerance ||
-          childRect.right > regionRect.right + tolerance;
+        const childIsClippedByRegion = childRect.left < visibleLeft - tolerance ||
+          childRect.right > visibleRight + tolerance;
 
         return targetTextIsClipped || childIsClippedByRegion;
       });
@@ -2800,16 +2844,18 @@
         return;
       }
 
-      const horizontalPadding = getNavHorizontalPadding();
       const naturalContentWidth = Math.max(
-        navScrollRegion.scrollWidth - horizontalPadding,
+        navScrollRegion.scrollWidth - getNavHorizontalPadding(),
         getNavContentWidthFromChildren()
       );
-      const availableWidthWithoutArrows = navScrollRegion.clientWidth;
-      const topNavOverflows = topNav ? topNav.scrollWidth > topNav.clientWidth + 2 : false;
+      const measuredAvailableWidth = getNavAvailableWidth();
+      const availableWidth = measuredAvailableWidth > 0
+        ? measuredAvailableWidth
+        : Math.max(navScrollRegion.clientWidth - getNavHorizontalPadding(), 0);
+      const scrollWidthOverflow = navScrollRegion.scrollWidth > navScrollRegion.clientWidth + 2;
       const hasPartialItemClipping = navHasPartiallyHiddenItems();
-      const hasOverflow = naturalContentWidth > availableWidthWithoutArrows + 2 ||
-        topNavOverflows ||
+      const hasOverflow = naturalContentWidth > availableWidth + 2 ||
+        scrollWidthOverflow ||
         hasPartialItemClipping;
 
       navScrollShell.classList.toggle("no-scroll", !hasOverflow);
@@ -2847,7 +2893,10 @@
     function updateNavScrollControlsSoon() {
       requestAnimationFrame(function() {
         updateNavScrollControls();
-        requestAnimationFrame(updateNavScrollControls);
+        requestAnimationFrame(function() {
+          updateNavScrollControls();
+          setTimeout(updateNavScrollControls, 80);
+        });
       });
     }
 
@@ -2856,14 +2905,34 @@
         return;
       }
 
-      const scrollAmount = Math.max(Math.round(navScrollRegion.clientWidth * 0.72), 220);
+      const regionRect = navScrollRegion.getBoundingClientRect();
+      const tolerance = 6;
+      const children = getVisibleNavChildren();
+      const targetChild = direction > 0
+        ? children.find(function(child) {
+            return child.getBoundingClientRect().right > regionRect.right - tolerance;
+          })
+        : children.slice().reverse().find(function(child) {
+            return child.getBoundingClientRect().left < regionRect.left + tolerance;
+          });
 
-      navScrollRegion.scrollBy({
-        left: direction * scrollAmount,
-        behavior: "smooth"
-      });
+      if (targetChild && typeof targetChild.scrollIntoView === "function") {
+        targetChild.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: direction > 0 ? "start" : "end"
+        });
+      } else {
+        const scrollAmount = Math.max(Math.round(navScrollRegion.clientWidth * 0.72), 220);
+
+        navScrollRegion.scrollBy({
+          left: direction * scrollAmount,
+          behavior: "smooth"
+        });
+      }
 
       setTimeout(updateNavScrollControls, 260);
+      setTimeout(positionOpenDropdownMenus, 280);
     }
 
     function positionDropdownMenu(dropdown) {
@@ -2931,6 +3000,34 @@
       positionOpenDropdownMenus();
       updateNavScrollControlsSoon();
     });
+
+    window.addEventListener("load", function() {
+      updateNavScrollControlsSoon();
+    });
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(updateNavScrollControlsSoon);
+    }
+
+    if (window.ResizeObserver && navScrollShell) {
+      const navResizeObserver = new ResizeObserver(function() {
+        updateNavScrollControlsSoon();
+      });
+
+      navResizeObserver.observe(navScrollShell);
+
+      if (topNav) {
+        navResizeObserver.observe(topNav);
+      }
+
+      if (navReminderSlot) {
+        navResizeObserver.observe(navReminderSlot);
+      }
+
+      if (departmentSharePointLink) {
+        navResizeObserver.observe(departmentSharePointLink);
+      }
+    }
 
     applyConfigToNavigation();
     renderProjectLinks();
