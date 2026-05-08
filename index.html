@@ -1102,6 +1102,12 @@
             Support <span class="caret">▼</span>
           </div>
           <div class="dropdown-menu">
+            <a href="#" onclick="openAccessRequestEmail(event)">
+              Request Access
+            </a>
+
+            <div class="dropdown-divider"></div>
+
             <a href="https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7" target="_blank" rel="noopener noreferrer">
               Smartsheet Project Creation Request
             </a>
@@ -1386,6 +1392,52 @@
       }
 
       return text.split("(Department Name)").join(PORTAL_CONFIG.departmentName);
+    }
+
+    function openAccessRequestEmail(event) {
+      if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+
+      const route = parseHashRoute();
+      const embedData = getEmbedDataForRoute(route);
+
+      const portalTitle = PORTAL_CONFIG.portalTitle || document.title || "Smartsheet Project Portal";
+      const departmentName = PORTAL_CONFIG.departmentName || "Unknown Department";
+      const currentPage = embedData && embedData.label
+        ? replaceDepartmentName(embedData.label)
+        : "Unknown Page/View";
+
+      const currentUrl = window.location.href;
+      const submittedAt = new Date().toLocaleString();
+
+      const subject = encodeURIComponent("Access Request - " + portalTitle);
+
+      const body = encodeURIComponent(
+        "Hello Ben,\n\n" +
+        "I am requesting access to the Smartsheet portal page listed below.\n\n" +
+        "Portal: " + portalTitle + "\n" +
+        "Department: " + departmentName + "\n" +
+        "Current Page/View: " + currentPage + "\n" +
+        "Page URL: " + currentUrl + "\n" +
+        "Request Date/Time: " + submittedAt + "\n\n" +
+        "Reason for access, optional:\n" +
+        "[Please type reason here]\n\n" +
+        "Thank you!"
+      );
+
+      const mailtoLink =
+        "mailto:Benjamin.Bell@swgas.com" +
+        "?subject=" + subject +
+        "&body=" + body;
+
+      suppressUnsavedBeforeUnload = true;
+      window.location.href = mailtoLink;
+
+      setTimeout(function() {
+        suppressUnsavedBeforeUnload = false;
+      }, 1500);
     }
 
     function routeKey(route) {
