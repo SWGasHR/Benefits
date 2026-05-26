@@ -838,6 +838,75 @@
       font-weight: 700;
     }
 
+    /* --- SMARTSHEET AUTH REFRESH BANNER --- */
+    .auth-refresh-banner {
+      background: linear-gradient(135deg, #ffffff 0%, #eef4ff 100%);
+      color: #252763;
+      border-bottom: 1px solid #dedff1;
+      padding: 10px 18px;
+      font-size: 13px;
+      line-height: 1.4;
+      flex-shrink: 0;
+      z-index: 11;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .auth-refresh-banner.hidden {
+      display: none;
+    }
+
+    .auth-refresh-banner-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      text-align: center;
+    }
+
+    .auth-refresh-banner strong {
+      font-weight: 800;
+    }
+
+    .auth-refresh-banner span {
+      color: #333;
+    }
+
+    .auth-refresh-banner button {
+      font-family: inherit;
+      border: none;
+      border-radius: 7px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    #authRefreshButton {
+      background: #252763;
+      color: white;
+      padding: 7px 12px;
+      box-shadow: 0 4px 10px rgba(37, 39, 99, 0.18);
+    }
+
+    #authRefreshButton:hover,
+    #authRefreshButton:focus {
+      background: #1d1f50;
+      outline: none;
+    }
+
+    #authRefreshDismiss {
+      background: transparent;
+      color: #252763;
+      font-size: 20px;
+      line-height: 1;
+      padding: 2px 8px;
+    }
+
+    #authRefreshDismiss:hover,
+    #authRefreshDismiss:focus {
+      background: rgba(37, 39, 99, 0.08);
+      outline: none;
+    }
+
     /* --- IFRAME AREA --- */
     .iframe-wrap {
       position: relative;
@@ -1214,13 +1283,6 @@
               Smartsheet Support
             </a>
 
-            <a id="smartsheetSignInRefreshLink"
-               href="https://app.smartsheet.com/"
-               target="_blank"
-               rel="noopener noreferrer">
-              Sign In to Smartsheet / Refresh Access
-            </a>
-
             <div class="dropdown-divider"></div>
 
             <a id="jobAidMgrLink" href="INSERT_SUPPORT_LINK_3_HERE">Job Aid (MGR)</a>
@@ -1311,6 +1373,15 @@
     To make updates, open the specific project sheet from the Projects menu.
   </div>
 
+  <div class="auth-refresh-banner hidden" id="authRefreshBanner" role="status" aria-live="polite">
+    <div class="auth-refresh-banner-inner">
+      <strong>Welcome back.</strong>
+      <span>If you just signed in to Smartsheet, click Refresh Smartsheet Views to reload your access. If Smartsheet still asks you to log in, complete the login first and return here.</span>
+      <button type="button" id="authRefreshButton">Refresh Smartsheet Views</button>
+      <button type="button" id="authRefreshDismiss" aria-label="Dismiss sign-in refresh message">×</button>
+    </div>
+  </div>
+
   <div class="iframe-wrap">
     <div class="iframe-pool" id="iframePool"></div>
 
@@ -1393,7 +1464,6 @@
       supportLinks: {
         projectCreationRequest: "https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7",
         smartsheetSupport: "https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593",
-        smartsheetSignIn: "https://app.smartsheet.com/",
         jobAidMgr: "INSERT_JOB_AID_MGR_LINK_HERE",
         jobAidDir: "INSERT_JOB_AID_DIR_LINK_HERE"
       }
@@ -1567,12 +1637,14 @@
     const departmentLogo = document.getElementById("departmentLogo");
     const projectCreationRequestLink = document.getElementById("projectCreationRequestLink");
     const smartsheetSupportLink = document.getElementById("smartsheetSupportLink");
-    const smartsheetSignInRefreshLink = document.getElementById("smartsheetSignInRefreshLink");
     const jobAidMgrLink = document.getElementById("jobAidMgrLink");
     const jobAidDirLink = document.getElementById("jobAidDirLink");
     const requestAccessLink = document.getElementById("requestAccessLink");
     const placeholderEmailLink = document.getElementById("placeholderEmailLink");
     const placeholderProjectCreationLink = document.getElementById("placeholderProjectCreationLink");
+    const authRefreshBanner = document.getElementById("authRefreshBanner");
+    const authRefreshButton = document.getElementById("authRefreshButton");
+    const authRefreshDismiss = document.getElementById("authRefreshDismiss");
 
     let projectModeActive = false;
     let pendingNavigationAction = null;
@@ -1605,25 +1677,24 @@
     const PRELOAD_STAGGER_MS = 250;
 
     /*
-      Safer Smartsheet sign-in refresh.
-
-      The old version tried to guess when a user returned from Smartsheet sign-in
-      by watching iframe focus, window blur, and tab visibility. That caused random
-      refreshes when users simply clicked inside Smartsheet, switched tabs, or came
-      back to the browser later.
-
-      This version only refreshes after the user clicks the controlled
-      "Sign In to Smartsheet / Refresh Access" link in the Support menu. When they
-      return to this portal, the existing Smartsheet iframes reload so they can pick
-      up the newly signed-in Smartsheet session without reloading the entire portal.
+      Smartsheet sign-in recovery.
+      Because the Smartsheet sign-in button lives inside a cross-domain iframe,
+      this portal cannot reliably detect the exact sign-in click. To avoid random
+      full-page refreshes, the portal now shows a safe refresh banner after a
+      likely sign-in return. The user can refresh only the embedded Smartsheet
+      views without reloading the entire portal.
     */
     const AUTH_STORAGE_PREFIX = String(PORTAL_CONFIG.departmentName || "department")
       .replace(/[^a-z0-9]/gi, "")
       .toLowerCase() || "department";
-    const AUTH_RETURN_PENDING_KEY = AUTH_STORAGE_PREFIX + "PortalControlledSmartsheetAuthPending";
-    const AUTH_RETURN_MIN_AWAY_MS = 3000;
+    const AUTH_RETURN_PENDING_KEY = AUTH_STORAGE_PREFIX + "PortalPossibleSmartsheetAuthReturn";
+    const AUTH_RETURN_BANNER_DISMISSED_KEY = AUTH_STORAGE_PREFIX + "PortalAuthRefreshBannerDismissedAt";
+    const AUTH_IFRAME_TO_HIDE_WINDOW_MS = 3000;
+    const AUTH_RETURN_MIN_AWAY_MS = 6000;
     const AUTH_RETURN_MAX_AWAY_MS = 20 * 60 * 1000;
+    const AUTH_BANNER_DISMISS_COOLDOWN_MS = 5 * 60 * 1000;
 
+    let lastIframeInteractionAt = 0;
     let authReturnRefreshTimer = null;
 
     function isPlaceholderLink(link) {
@@ -1828,21 +1899,41 @@
       setTimeout(preloadNextRoute, PRELOAD_START_DELAY_MS);
     }
 
-    function markControlledSmartsheetSignInStarted() {
-      sessionStorage.setItem(AUTH_RETURN_PENDING_KEY, String(Date.now()));
+    function notePossibleIframeInteraction() {
+      lastIframeInteractionAt = Date.now();
     }
 
-    function reloadSmartsheetIframesAfterSignIn() {
+    function clearPossibleSmartsheetAuthReturn() {
+      sessionStorage.removeItem(AUTH_RETURN_PENDING_KEY);
+    }
+
+    function markPossibleSmartsheetAuthReturn() {
+      const now = Date.now();
+      const iframeWasJustUsed = now - lastIframeInteractionAt <= AUTH_IFRAME_TO_HIDE_WINDOW_MS;
+
+      if (!iframeWasJustUsed) {
+        return;
+      }
+
+      sessionStorage.setItem(AUTH_RETURN_PENDING_KEY, String(now));
+    }
+
+    function showAuthRefreshBannerIfNeeded() {
+      if (!authRefreshBanner) {
+        return;
+      }
+
       const pendingAt = Number(sessionStorage.getItem(AUTH_RETURN_PENDING_KEY) || 0);
 
       if (!pendingAt) {
         return;
       }
 
-      const timeAway = Date.now() - pendingAt;
+      const now = Date.now();
+      const timeAway = now - pendingAt;
 
       if (timeAway > AUTH_RETURN_MAX_AWAY_MS) {
-        sessionStorage.removeItem(AUTH_RETURN_PENDING_KEY);
+        clearPossibleSmartsheetAuthReturn();
         return;
       }
 
@@ -1850,39 +1941,74 @@
         return;
       }
 
-      sessionStorage.removeItem(AUTH_RETURN_PENDING_KEY);
+      const dismissedAt = Number(sessionStorage.getItem(AUTH_RETURN_BANNER_DISMISSED_KEY) || 0);
 
-      const activeIframeRecord = currentViewKey ? iframeRegistry[currentViewKey] : null;
-
-      if (activeIframeRecord) {
-        activeIframeRecord.isLoaded = false;
-        showLoadingMessage();
+      if (dismissedAt && now - dismissedAt < AUTH_BANNER_DISMISS_COOLDOWN_MS) {
+        clearPossibleSmartsheetAuthReturn();
+        return;
       }
 
-      Object.keys(iframeRegistry).forEach(function(registryKey) {
-        const iframeRecord = iframeRegistry[registryKey];
-
-        if (!iframeRecord || !iframeRecord.frame) {
-          return;
-        }
-
-        const currentSrc = iframeRecord.frame.getAttribute("src");
-
-        if (!currentSrc || currentSrc === "about:blank") {
-          return;
-        }
-
-        iframeRecord.isLoaded = false;
-        iframeRecord.frame.src = currentSrc;
-      });
+      authRefreshBanner.classList.remove("hidden");
     }
 
-    function scheduleControlledAuthReturnRefreshCheck() {
+    function scheduleAuthReturnRefreshCheck() {
+      if (!sessionStorage.getItem(AUTH_RETURN_PENDING_KEY)) {
+        return;
+      }
+
       clearTimeout(authReturnRefreshTimer);
 
       authReturnRefreshTimer = setTimeout(function() {
-        reloadSmartsheetIframesAfterSignIn();
+        showAuthRefreshBannerIfNeeded();
       }, 500);
+    }
+
+    function hideAuthRefreshBanner() {
+      if (authRefreshBanner) {
+        authRefreshBanner.classList.add("hidden");
+      }
+    }
+
+    function refreshSmartsheetIframes() {
+      clearPossibleSmartsheetAuthReturn();
+      hideAuthRefreshBanner();
+
+      Object.keys(iframeRegistry).forEach(function(registryKey) {
+        const record = iframeRegistry[registryKey];
+
+        if (!record || !record.frame) {
+          return;
+        }
+
+        const separatorIndex = registryKey.indexOf(":");
+
+        if (separatorIndex === -1) {
+          return;
+        }
+
+        const route = {
+          type: registryKey.slice(0, separatorIndex),
+          id: registryKey.slice(separatorIndex + 1)
+        };
+
+        const embedData = getEmbedDataForRoute(route);
+
+        if (!embedData || isPlaceholderLink(embedData.embedSrc)) {
+          return;
+        }
+
+        record.isLoaded = false;
+
+        if (registryKey === currentViewKey) {
+          showLoadingMessage();
+        }
+
+        record.frame.src = "about:blank";
+
+        setTimeout(function() {
+          record.frame.src = embedData.embedSrc;
+        }, 75);
+      });
     }
 
     function parseHashRoute() {
@@ -2608,7 +2734,6 @@
 
       updateConfiguredLink(projectCreationRequestLink, getSharedSupportLink("projectCreationRequest"));
       updateConfiguredLink(smartsheetSupportLink, getSharedSupportLink("smartsheetSupport"));
-      updateConfiguredLink(smartsheetSignInRefreshLink, getSharedSupportLink("smartsheetSignIn"));
       updateConfiguredLink(jobAidMgrLink, getSharedSupportLink("jobAidMgr"));
       updateConfiguredLink(jobAidDirLink, getSharedSupportLink("jobAidDir"));
       updateConfiguredLink(placeholderProjectCreationLink, getSharedSupportLink("projectCreationRequest"));
@@ -2761,15 +2886,42 @@
     projectSearch.addEventListener("input", filterProjectLinks);
     window.addEventListener("hashchange", handleHashChange);
 
+    if (authRefreshButton) {
+      authRefreshButton.addEventListener("click", function() {
+        refreshSmartsheetIframes();
+      });
+    }
+
+    if (authRefreshDismiss) {
+      authRefreshDismiss.addEventListener("click", function() {
+        sessionStorage.setItem(AUTH_RETURN_BANNER_DISMISSED_KEY, String(Date.now()));
+        clearPossibleSmartsheetAuthReturn();
+        hideAuthRefreshBanner();
+      });
+    }
+
+    window.addEventListener("blur", function() {
+      const activeElement = document.activeElement;
+
+      if (activeElement && activeElement.classList && activeElement.classList.contains("content-frame")) {
+        notePossibleIframeInteraction();
+      }
+    }, true);
+
     document.addEventListener("visibilitychange", function() {
+      if (document.visibilityState === "hidden") {
+        markPossibleSmartsheetAuthReturn();
+        return;
+      }
+
       if (document.visibilityState === "visible") {
-        scheduleControlledAuthReturnRefreshCheck();
+        scheduleAuthReturnRefreshCheck();
       }
     });
 
     window.addEventListener("focus", function() {
       if (!document.hidden) {
-        scheduleControlledAuthReturnRefreshCheck();
+        scheduleAuthReturnRefreshCheck();
       }
     });
 
@@ -2784,17 +2936,11 @@
       const isProjectViewLink = clickedLink.classList.contains("project-view-link");
       const isPlaceholderActionLink = clickedLink.classList.contains("placeholder-action-link");
       const isRequestAccessLink = clickedLink.id === "requestAccessLink";
-      const isSmartsheetSignInRefreshLink = clickedLink.id === "smartsheetSignInRefreshLink";
       const href = clickedLink.getAttribute("href");
 
       if (isRequestAccessLink) {
         event.preventDefault();
         openAccessRequestEmail(event);
-        return;
-      }
-
-      if (isSmartsheetSignInRefreshLink && !projectModeActive) {
-        markControlledSmartsheetSignInStarted();
         return;
       }
 
@@ -2823,10 +2969,6 @@
           if (isPlaceholderLink(href)) {
             showPlaceholderMessage();
             return;
-          }
-
-          if (isSmartsheetSignInRefreshLink) {
-            markControlledSmartsheetSignInStarted();
           }
 
           if (target === "_blank") {
