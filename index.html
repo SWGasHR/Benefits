@@ -1214,6 +1214,13 @@
               Smartsheet Support
             </a>
 
+            <a id="smartsheetSignInRefreshLink"
+               href="https://app.smartsheet.com/"
+               target="_blank"
+               rel="noopener noreferrer">
+              Sign In to Smartsheet / Refresh Access
+            </a>
+
             <div class="dropdown-divider"></div>
 
             <a id="jobAidMgrLink" href="INSERT_SUPPORT_LINK_3_HERE">Job Aid (MGR)</a>
@@ -1386,6 +1393,7 @@
       supportLinks: {
         projectCreationRequest: "https://app.smartsheet.com/b/form/019a16dd2b3d7e2d96db9a9e8c1aedc7",
         smartsheetSupport: "https://app.smartsheet.com/b/form/019a16e297d77bd2b18acb36bc27e593",
+        smartsheetSignIn: "https://app.smartsheet.com/",
         jobAidMgr: "INSERT_JOB_AID_MGR_LINK_HERE",
         jobAidDir: "INSERT_JOB_AID_DIR_LINK_HERE"
       }
@@ -1559,6 +1567,7 @@
     const departmentLogo = document.getElementById("departmentLogo");
     const projectCreationRequestLink = document.getElementById("projectCreationRequestLink");
     const smartsheetSupportLink = document.getElementById("smartsheetSupportLink");
+    const smartsheetSignInRefreshLink = document.getElementById("smartsheetSignInRefreshLink");
     const jobAidMgrLink = document.getElementById("jobAidMgrLink");
     const jobAidDirLink = document.getElementById("jobAidDirLink");
     const requestAccessLink = document.getElementById("requestAccessLink");
@@ -1596,22 +1605,25 @@
     const PRELOAD_STAGGER_MS = 250;
 
     /*
-      If a user is signed out of Smartsheet, the embedded view may send them
-      to a separate sign-in tab. When they return, the already-preloaded
-      iframes can still show the old sign-in screen. This refreshes the portal
-      one time after a likely Smartsheet sign-in return so every iframe reloads
-      with the new signed-in session.
+      Safer Smartsheet sign-in refresh.
+
+      The old version tried to guess when a user returned from Smartsheet sign-in
+      by watching iframe focus, window blur, and tab visibility. That caused random
+      refreshes when users simply clicked inside Smartsheet, switched tabs, or came
+      back to the browser later.
+
+      This version only refreshes after the user clicks the controlled
+      "Sign In to Smartsheet / Refresh Access" link in the Support menu. When they
+      return to this portal, the existing Smartsheet iframes reload so they can pick
+      up the newly signed-in Smartsheet session without reloading the entire portal.
     */
     const AUTH_STORAGE_PREFIX = String(PORTAL_CONFIG.departmentName || "department")
       .replace(/[^a-z0-9]/gi, "")
       .toLowerCase() || "department";
-    const AUTH_RETURN_REFRESH_DONE_KEY = AUTH_STORAGE_PREFIX + "PortalSmartsheetAuthRefreshDone";
-    const AUTH_RETURN_PENDING_KEY = AUTH_STORAGE_PREFIX + "PortalPossibleSmartsheetAuthReturn";
-    const AUTH_RETURN_MIN_AWAY_MS = 5000;
+    const AUTH_RETURN_PENDING_KEY = AUTH_STORAGE_PREFIX + "PortalControlledSmartsheetAuthPending";
+    const AUTH_RETURN_MIN_AWAY_MS = 3000;
     const AUTH_RETURN_MAX_AWAY_MS = 20 * 60 * 1000;
-    const IFRAME_INTERACTION_WINDOW_MS = 45000;
 
-    let lastIframeInteractionAt = 0;
     let authReturnRefreshTimer = null;
 
     function isPlaceholderLink(link) {
@@ -1816,29 +1828,11 @@
       setTimeout(preloadNextRoute, PRELOAD_START_DELAY_MS);
     }
 
-    function notePossibleIframeInteraction() {
-      lastIframeInteractionAt = Date.now();
-    }
-
-    function markPossibleSmartsheetAuthReturn() {
-      if (sessionStorage.getItem(AUTH_RETURN_REFRESH_DONE_KEY) === "true") {
-        return;
-      }
-
-      const clickedIframeRecently = Date.now() - lastIframeInteractionAt <= IFRAME_INTERACTION_WINDOW_MS;
-
-      if (!clickedIframeRecently) {
-        return;
-      }
-
+    function markControlledSmartsheetSignInStarted() {
       sessionStorage.setItem(AUTH_RETURN_PENDING_KEY, String(Date.now()));
     }
 
-    function refreshOnceAfterSmartsheetAuthReturn() {
-      if (sessionStorage.getItem(AUTH_RETURN_REFRESH_DONE_KEY) === "true") {
-        return;
-      }
-
+    function reloadSmartsheetIframesAfterSignIn() {
       const pendingAt = Number(sessionStorage.getItem(AUTH_RETURN_PENDING_KEY) || 0);
 
       if (!pendingAt) {
@@ -1856,18 +1850,38 @@
         return;
       }
 
-      sessionStorage.setItem(AUTH_RETURN_REFRESH_DONE_KEY, "true");
       sessionStorage.removeItem(AUTH_RETURN_PENDING_KEY);
 
-      suppressUnsavedBeforeUnload = true;
-      window.location.reload();
+      const activeIframeRecord = currentViewKey ? iframeRegistry[currentViewKey] : null;
+
+      if (activeIframeRecord) {
+        activeIframeRecord.isLoaded = false;
+        showLoadingMessage();
+      }
+
+      Object.keys(iframeRegistry).forEach(function(registryKey) {
+        const iframeRecord = iframeRegistry[registryKey];
+
+        if (!iframeRecord || !iframeRecord.frame) {
+          return;
+        }
+
+        const currentSrc = iframeRecord.frame.getAttribute("src");
+
+        if (!currentSrc || currentSrc === "about:blank") {
+          return;
+        }
+
+        iframeRecord.isLoaded = false;
+        iframeRecord.frame.src = currentSrc;
+      });
     }
 
-    function scheduleAuthReturnRefreshCheck() {
+    function scheduleControlledAuthReturnRefreshCheck() {
       clearTimeout(authReturnRefreshTimer);
 
       authReturnRefreshTimer = setTimeout(function() {
-        refreshOnceAfterSmartsheetAuthReturn();
+        reloadSmartsheetIframesAfterSignIn();
       }, 500);
     }
 
@@ -2594,6 +2608,7 @@
 
       updateConfiguredLink(projectCreationRequestLink, getSharedSupportLink("projectCreationRequest"));
       updateConfiguredLink(smartsheetSupportLink, getSharedSupportLink("smartsheetSupport"));
+      updateConfiguredLink(smartsheetSignInRefreshLink, getSharedSupportLink("smartsheetSignIn"));
       updateConfiguredLink(jobAidMgrLink, getSharedSupportLink("jobAidMgr"));
       updateConfiguredLink(jobAidDirLink, getSharedSupportLink("jobAidDir"));
       updateConfiguredLink(placeholderProjectCreationLink, getSharedSupportLink("projectCreationRequest"));
@@ -2746,25 +2761,15 @@
     projectSearch.addEventListener("input", filterProjectLinks);
     window.addEventListener("hashchange", handleHashChange);
 
-    window.addEventListener("blur", function() {
-      const activeElement = document.activeElement;
-
-      if (activeElement && activeElement.classList && activeElement.classList.contains("content-frame")) {
-        notePossibleIframeInteraction();
-      }
-    }, true);
-
     document.addEventListener("visibilitychange", function() {
-      if (document.visibilityState === "hidden") {
-        markPossibleSmartsheetAuthReturn();
-      } else {
-        scheduleAuthReturnRefreshCheck();
+      if (document.visibilityState === "visible") {
+        scheduleControlledAuthReturnRefreshCheck();
       }
     });
 
     window.addEventListener("focus", function() {
       if (!document.hidden) {
-        scheduleAuthReturnRefreshCheck();
+        scheduleControlledAuthReturnRefreshCheck();
       }
     });
 
@@ -2779,11 +2784,17 @@
       const isProjectViewLink = clickedLink.classList.contains("project-view-link");
       const isPlaceholderActionLink = clickedLink.classList.contains("placeholder-action-link");
       const isRequestAccessLink = clickedLink.id === "requestAccessLink";
+      const isSmartsheetSignInRefreshLink = clickedLink.id === "smartsheetSignInRefreshLink";
       const href = clickedLink.getAttribute("href");
 
       if (isRequestAccessLink) {
         event.preventDefault();
         openAccessRequestEmail(event);
+        return;
+      }
+
+      if (isSmartsheetSignInRefreshLink && !projectModeActive) {
+        markControlledSmartsheetSignInStarted();
         return;
       }
 
@@ -2812,6 +2823,10 @@
           if (isPlaceholderLink(href)) {
             showPlaceholderMessage();
             return;
+          }
+
+          if (isSmartsheetSignInRefreshLink) {
+            markControlledSmartsheetSignInStarted();
           }
 
           if (target === "_blank") {
