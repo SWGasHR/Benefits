@@ -1617,10 +1617,12 @@
         3. Add or update department dropdowns under projectGroups.
         4. Keep each project id unique across all departments.
         5. Set visible: true to show a project, or visible: false to keep a template hidden.
-        6. Set preload: true only for projects that should load after the first page opens.
-        7. Replace INSERT_... placeholder links before making a template visible.
-        8. Use "(Department Name)" in labels when you want the template to auto-fill the department name.
-        9. All HR Personal Tasks opens in a new tab and is intentionally not preloaded as an iframe.
+        6. Set openByDefault: true on any department that should start expanded; use false to start collapsed.
+        7. Set preload: true only for embedded Benefits projects or portal views that should load in the background.
+        8. Non-Benefits projects open as normal same-tab links, so keep their preload setting false.
+        9. Replace INSERT_... placeholder links before making a template visible.
+        10. Use "(Department Name)" in labels when you want the template to auto-fill the department name.
+        11. All HR Personal Tasks opens in a new tab and is intentionally not preloaded as an iframe.
       */
 
       portalTitle: "Benefits Project Portal",
@@ -1636,27 +1638,31 @@
           label: "Home",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=13971636efc64535bca834c5bd2b499a",
           viewOnlyNote: false,
-          refreshNote: true
+          refreshNote: true,
+          preload: true
         },
 
         mainInitiatives: {
           label: "Benefits Main Initiatives",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=3d336acb529a47e1bd3701ecd71b22a9",
           viewOnlyNote: false,
-          refreshNote: true
+          refreshNote: true,
+          preload: true
         },
 
         allDepartmentProjects: {
           label: "All Benefits Projects (View Only)",
           embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=bbb5a5a6a2d9411990d7442a2dfec3ae",
           viewOnlyNote: true,
-          refreshNote: false
+          refreshNote: false,
+          preload: true
         }
       },
 
       projectGroups: [
         {
           label: "Benefits",
+          openByDefault: true,
           projects: [
             { id: "short-term-projects-benefits", label: "Short-Term Projects", preload: true, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=d575dd0772a144f3b5e57aa51803d403", visible: true },
             { id: "open enrollment 2026", label: "Open Enrollment 2026", preload: true, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=379a936b6187472faf634ba8aaf80c8b" },
@@ -1666,210 +1672,221 @@
             { id: "benefits-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_BENEFITS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "open enrollment 2025", label: "Open Enrollment 2025", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=e606315264984f84bd6e288a6871ec5a" },
-            { id: "benefits-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "benefits-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "benefits-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "benefits-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "benefits-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "open enrollment 2025", label: "Open Enrollment 2025", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=e606315264984f84bd6e288a6871ec5a" },
+            { id: "benefits-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "benefits-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "benefits-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "benefits-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "benefits-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_BENEFITS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "Compensation",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-compensation", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=2e0fb8962bb6449cad85da6fd92c626a", visible: true },
-            { id: "compensation-project-template-1", label: "Project Template 1", embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "compensation-project-template-2", label: "Project Template 2", embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "compensation-project-template-3", label: "Project Template 3", embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "compensation-project-template-4", label: "Project Template 4", embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-compensation", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=2e0fb8962bb6449cad85da6fd92c626a", visible: true },
+            { id: "compensation-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "compensation-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "compensation-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "compensation-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "compensation-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "compensation-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "compensation-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "compensation-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "compensation-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "compensation-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "compensation-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "compensation-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "compensation-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "compensation-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_COMPENSATION_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "DE&I",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-dei", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=ab57594639f5477b8cf810217530e5e9", visible: true },
-            { id: "dei-project-template-1", label: "Project Template 1", embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "dei-project-template-2", label: "Project Template 2", embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "dei-project-template-3", label: "Project Template 3", embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "dei-project-template-4", label: "Project Template 4", embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-dei", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=ab57594639f5477b8cf810217530e5e9", visible: true },
+            { id: "dei-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "dei-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "dei-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "dei-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "dei-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "dei-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "dei-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "dei-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "dei-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "dei-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "dei-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "dei-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "dei-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "dei-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_DEI_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "Employee Experience",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-employee-experience", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=5c7efc0357a5471f8559cde63936a16f", visible: true },
-            { id: "tyctwd 2026", label: "TYCTWD (2026)", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=d47cd6a5a19f4c5f92e94a813dcc3be0" },
-            { id: "employee-experience-project-template-1", label: "Project Template 1", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "employee-experience-project-template-2", label: "Project Template 2", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "employee-experience-project-template-3", label: "Project Template 3", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "employee-experience-project-template-4", label: "Project Template 4", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-employee-experience", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=5c7efc0357a5471f8559cde63936a16f", visible: true },
+            { id: "tyctwd 2026", label: "TYCTWD (2026)", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=d47cd6a5a19f4c5f92e94a813dcc3be0" },
+            { id: "employee-experience-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "employee-experience-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "employee-experience-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "employee-experience-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "employee-experience-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "employee-experience-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "employee-experience-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "employee-experience-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "employee-experience-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "employee-experience-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "employee-experience-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "employee-experience-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "employee-experience-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "employee-experience-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_EMPLOYEE_EXPERIENCE_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "HR Change Management",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-hr-change-management", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b57a2524e6144de2a06b6fd3eb60faa7", visible: true },
-            { id: "evp rollout plan", label: "EVP Rollout Plan", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=de1146e552624a2dbc19ab8821465d03" },
-            { id: "hr-change-management-project-template-1", label: "Project Template 1", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hr-change-management-project-template-2", label: "Project Template 2", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hr-change-management-project-template-3", label: "Project Template 3", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hr-change-management-project-template-4", label: "Project Template 4", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-hr-change-management", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b57a2524e6144de2a06b6fd3eb60faa7", visible: true },
+            { id: "evp rollout plan", label: "EVP Rollout Plan", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=de1146e552624a2dbc19ab8821465d03" },
+            { id: "hr-change-management-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hr-change-management-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hr-change-management-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hr-change-management-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "hr-change-management-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hr-change-management-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hr-change-management-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hr-change-management-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "hr-change-management-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "hr-change-management-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hr-change-management-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hr-change-management-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hr-change-management-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "hr-change-management-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_HR_CHANGE_MANAGEMENT_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "HR Operations Shared Projects",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-hr-operations-shared-projects", label: "Short-Term Projects", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_SHORT_TERM_PROJECTS_EMBED_LINK_HERE" , visible: true },
-            { id: "readiness", label: "Readiness", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=cd4faaab81c04c92b07b3f46adf80d68" },
-            { id: "summer intern projects", label: "Summer Intern Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=be3638b35df84dcea0ee453384cb00e1" },
-            { id: "hr-operations-shared-projects-project-template-1", label: "Project Template 1", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hr-operations-shared-projects-project-template-2", label: "Project Template 2", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hr-operations-shared-projects-project-template-3", label: "Project Template 3", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hr-operations-shared-projects-project-template-4", label: "Project Template 4", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-hr-operations-shared-projects", label: "Short-Term Projects", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_SHORT_TERM_PROJECTS_EMBED_LINK_HERE" , visible: true },
+            { id: "readiness", label: "Readiness", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=cd4faaab81c04c92b07b3f46adf80d68" },
+            { id: "summer intern projects", label: "Summer Intern Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=be3638b35df84dcea0ee453384cb00e1" },
+            { id: "hr-operations-shared-projects-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hr-operations-shared-projects-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hr-operations-shared-projects-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hr-operations-shared-projects-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "hr-operations-shared-projects-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hr-operations-shared-projects-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hr-operations-shared-projects-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hr-operations-shared-projects-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "hr-operations-shared-projects-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "hr-operations-shared-projects-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hr-operations-shared-projects-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hr-operations-shared-projects-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hr-operations-shared-projects-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "hr-operations-shared-projects-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "HRBP",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-hrbp", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=9fa3c4a5dcc24a1da11ece562921c7c5", visible: true },
-            { id: "hrbp-project-template-1", label: "Project Template 1", embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hrbp-project-template-2", label: "Project Template 2", embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hrbp-project-template-3", label: "Project Template 3", embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hrbp-project-template-4", label: "Project Template 4", embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-hrbp", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=9fa3c4a5dcc24a1da11ece562921c7c5", visible: true },
+            { id: "hrbp-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hrbp-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hrbp-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hrbp-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "hrbp-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hrbp-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hrbp-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hrbp-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "hrbp-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "hrbp-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hrbp-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hrbp-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hrbp-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "hrbp-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_HRBP_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "HRS",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-hrs", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=54bbc1becb764181b981021e4f5bcc99", visible: true },
-            { id: "hrs-project-template-1", label: "Project Template 1", embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hrs-project-template-2", label: "Project Template 2", embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hrs-project-template-3", label: "Project Template 3", embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hrs-project-template-4", label: "Project Template 4", embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-hrs", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=54bbc1becb764181b981021e4f5bcc99", visible: true },
+            { id: "hrs-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hrs-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hrs-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hrs-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "hrs-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hrs-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hrs-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hrs-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "hrs-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "hrs-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hrs-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hrs-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hrs-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "hrs-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_HRS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "HRSS",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-hrss", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=c10a615ed1464de49c96d275592e908d", visible: true },
-            { id: "hrsss specialists training plan kayle", label: "HRSS Specialists Training Plan Kayle", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=989958f443b1469ebc356286b32263dc" },
-            { id: "hrss specialists training plan lori", label: "HRSS Specialists Training Plan Lori", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=1c4f79dfca7f469e9c6f73b9595dfede" },
-            { id: "hrss-project-template-1", label: "Project Template 1", embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hrss-project-template-2", label: "Project Template 2", embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hrss-project-template-3", label: "Project Template 3", embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hrss-project-template-4", label: "Project Template 4", embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-hrss", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=c10a615ed1464de49c96d275592e908d", visible: true },
+            { id: "hrsss specialists training plan kayle", label: "HRSS Specialists Training Plan Kayle", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=989958f443b1469ebc356286b32263dc" },
+            { id: "hrss specialists training plan lori", label: "HRSS Specialists Training Plan Lori", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=1c4f79dfca7f469e9c6f73b9595dfede" },
+            { id: "hrss-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hrss-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hrss-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hrss-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HRSS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "hrss-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "hrss-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "hrss-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "hrss-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "hrss-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "hrss-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "hrss-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "hrss-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "hrss-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "hrss-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_HRSS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "Labor Relations",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-labor-relations", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=3b119c94e2a54f4585a838bf6e4bce00", visible: true },
-            { id: "form 185.2 project plan", label: "Form 185.2 Project Plan", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=9185a65e98384b469d5f88cc765c3b55" },
-            { id: "labor-relations-project-template-1", label: "Project Template 1", embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "labor-relations-project-template-2", label: "Project Template 2", embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "labor-relations-project-template-3", label: "Project Template 3", embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "labor-relations-project-template-4", label: "Project Template 4", embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-labor-relations", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=3b119c94e2a54f4585a838bf6e4bce00", visible: true },
+            { id: "form 185.2 project plan", label: "Form 185.2 Project Plan", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=9185a65e98384b469d5f88cc765c3b55" },
+            { id: "labor-relations-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "labor-relations-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "labor-relations-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "labor-relations-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "labor-relations-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "labor-relations-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "labor-relations-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "labor-relations-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "labor-relations-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "labor-relations-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "labor-relations-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "labor-relations-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "labor-relations-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "labor-relations-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_LABOR_RELATIONS_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "Talent Acquisition",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-talent-acquisition", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=6971c2f6cbd64b4390af95b58670c485", visible: true },
-            { id: "candidate assessment process", label: "Candidate Assessment Process", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b92ed59874604dea8f2b0215a258d528" },
-            { id: "talent-acquisition-project-template-1", label: "Project Template 1", embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "talent-acquisition-project-template-2", label: "Project Template 2", embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "talent-acquisition-project-template-3", label: "Project Template 3", embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "talent-acquisition-project-template-4", label: "Project Template 4", embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-talent-acquisition", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=6971c2f6cbd64b4390af95b58670c485", visible: true },
+            { id: "candidate assessment process", label: "Candidate Assessment Process", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b92ed59874604dea8f2b0215a258d528" },
+            { id: "talent-acquisition-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "talent-acquisition-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "talent-acquisition-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "talent-acquisition-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "talent-acquisition-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "talent-acquisition-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "talent-acquisition-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "talent-acquisition-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "talent-acquisition-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "talent-acquisition-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "talent-acquisition-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "talent-acquisition-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "talent-acquisition-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "talent-acquisition-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_TALENT_ACQUISITION_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         },
         {
           label: "Talent Development",
+          openByDefault: false,
           projects: [
-            { id: "short-term-projects-talent-development", label: "Short-Term Projects", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=00df3436d89e46f8be081df151c0b3a5", visible: true },
-            { id: "competency configuration / rollout plan", label: "Competency Configuration / Rollout Plans", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=a32b2110d3d5400dac1760825bfa6281" },
-            { id: "elo transition plan", label: "ELO Transition Plan", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=46376cb1ff6e47bf9b7ed1e62019ecd7" },
-            { id: "succession planning and development plans", label: "Succession Planning & Development Plans", embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b28d26edde0145d9ab91518a807c04fc" },
-            { id: "talent-development-project-template-1", label: "Project Template 1", embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "talent-development-project-template-2", label: "Project Template 2", embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "talent-development-project-template-3", label: "Project Template 3", embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "talent-development-project-template-4", label: "Project Template 4", embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
+            { id: "short-term-projects-talent-development", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=00df3436d89e46f8be081df151c0b3a5", visible: true },
+            { id: "competency configuration / rollout plan", label: "Competency Configuration / Rollout Plans", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=a32b2110d3d5400dac1760825bfa6281" },
+            { id: "elo transition plan", label: "ELO Transition Plan", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=46376cb1ff6e47bf9b7ed1e62019ecd7" },
+            { id: "succession planning and development plans", label: "Succession Planning & Development Plans", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b28d26edde0145d9ab91518a807c04fc" },
+            { id: "talent-development-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "talent-development-project-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "talent-development-project-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "talent-development-project-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_PROJECT_TEMPLATE_4_EMBED_LINK_HERE", visible: false }
           ],
           archiveProjects: [
-            { id: "talent-development-archive-template-1", label: "Project Template 1", embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
-            { id: "talent-development-archive-template-2", label: "Project Template 2", embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
-            { id: "talent-development-archive-template-3", label: "Project Template 3", embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
-            { id: "talent-development-archive-template-4", label: "Project Template 4", embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
-            { id: "talent-development-archive-template-5", label: "Project Template 5", embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
+            { id: "talent-development-archive-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
+            { id: "talent-development-archive-template-2", label: "Project Template 2", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_2_EMBED_LINK_HERE", visible: false },
+            { id: "talent-development-archive-template-3", label: "Project Template 3", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_3_EMBED_LINK_HERE", visible: false },
+            { id: "talent-development-archive-template-4", label: "Project Template 4", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_4_EMBED_LINK_HERE", visible: false },
+            { id: "talent-development-archive-template-5", label: "Project Template 5", preload: false, embedSrc: "INSERT_TALENT_DEVELOPMENT_ARCHIVE_TEMPLATE_5_EMBED_LINK_HERE", visible: false }
           ]
         }
       ]
@@ -2059,10 +2076,14 @@
       const routes = [];
 
       Object.keys(PORTAL_CONFIG.views).forEach(function(viewId) {
-        routes.push({
-          type: "view",
-          id: viewId
-        });
+        const view = PORTAL_CONFIG.views[viewId];
+
+        if (view && view.preload === true) {
+          routes.push({
+            type: "view",
+            id: viewId
+          });
+        }
       });
 
       getPreloadableProjects().forEach(function(project) {
@@ -2686,10 +2707,13 @@
       return projects;
     }
 
-    /* Every visible Benefits project is preloaded; hidden templates remain excluded. */
+    /*
+      Only visible Benefits projects with preload: true are loaded in the background.
+      Projects with preload: false still open normally when selected.
+    */
     function getPreloadableProjects() {
       return getAllProjects().filter(function(project) {
-        return isProjectVisible(project);
+        return isProjectVisible(project) && project.preload === true;
       });
     }
 
@@ -2927,6 +2951,9 @@
         projectLinksContainer.appendChild(groupButton);
         projectLinksContainer.appendChild(groupContent);
 
+        /* Change openByDefault in projectGroups to control the starting caret state. */
+        setCollapsibleOpen(groupButton, groupContent, group.openByDefault === true);
+
         getVisibleProjectItems(group.projects).forEach(function(project) {
           groupContent.appendChild(createProjectLink(project, groupIndex, false));
         });
@@ -3110,7 +3137,10 @@
         groupContents.forEach(function(content) {
           const groupKey = content.getAttribute("data-project-group-content");
           const button = projectLinksContainer.querySelector('[data-project-group-toggle="' + groupKey + '"]');
-          setCollapsibleOpen(button, content, false);
+          const group = getAllProjectGroups()[Number(groupKey)];
+          const shouldOpenByDefault = Boolean(group && group.openByDefault === true);
+
+          setCollapsibleOpen(button, content, shouldOpenByDefault);
           content.style.display = "";
         });
 
