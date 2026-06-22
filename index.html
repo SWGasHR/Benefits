@@ -1618,8 +1618,10 @@
         4. Keep each project id unique across all departments.
         5. Set visible: true to show a project, or visible: false to keep a template hidden.
         6. Set openByDefault: true on any department that should start expanded; use false to start collapsed.
-        7. Set preload: true only for embedded Benefits projects or portal views that should load in the background.
-        8. Non-Benefits projects open as normal same-tab links, so keep their preload setting false.
+        7. Set embed: true on a department to open every project in that department inside this portal as iframe views.
+           Set embed: false to make every project in that department open as normal same-tab links.
+        8. Set preload: true on an individual project only when that department has embed: true and the project should load in the background.
+           preload has no effect when the department has embed: false.
         9. Replace INSERT_... placeholder links before making a template visible.
         10. Use "(Department Name)" in labels when you want the template to auto-fill the department name.
         11. All HR Personal Tasks opens in a new tab and is intentionally not preloaded as an iframe.
@@ -1663,6 +1665,7 @@
         {
           label: "Benefits",
           openByDefault: true,
+          embed: true,
           projects: [
             { id: "short-term-projects-benefits", label: "Short-Term Projects", preload: true, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=d575dd0772a144f3b5e57aa51803d403", visible: true },
             { id: "open enrollment 2026", label: "Open Enrollment 2026", preload: true, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=379a936b6187472faf634ba8aaf80c8b" },
@@ -1683,6 +1686,7 @@
         {
           label: "Compensation",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-compensation", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=2e0fb8962bb6449cad85da6fd92c626a", visible: true },
             { id: "compensation-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_COMPENSATION_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
@@ -1701,6 +1705,7 @@
         {
           label: "DE&I",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-dei", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=ab57594639f5477b8cf810217530e5e9", visible: true },
             { id: "dei-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_DEI_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
@@ -1719,6 +1724,7 @@
         {
           label: "Employee Experience",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-employee-experience", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=5c7efc0357a5471f8559cde63936a16f", visible: true },
             { id: "tyctwd 2026", label: "TYCTWD (2026)", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=d47cd6a5a19f4c5f92e94a813dcc3be0" },
@@ -1738,6 +1744,7 @@
         {
           label: "HR Change Management",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-hr-change-management", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b57a2524e6144de2a06b6fd3eb60faa7", visible: true },
             { id: "evp rollout plan", label: "EVP Rollout Plan", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=de1146e552624a2dbc19ab8821465d03" },
@@ -1757,6 +1764,7 @@
         {
           label: "HR Operations Shared Projects",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-hr-operations-shared-projects", label: "Short-Term Projects", preload: false, embedSrc: "INSERT_HR_OPERATIONS_SHARED_PROJECTS_SHORT_TERM_PROJECTS_EMBED_LINK_HERE" , visible: true },
             { id: "readiness", label: "Readiness", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=cd4faaab81c04c92b07b3f46adf80d68" },
@@ -1777,6 +1785,7 @@
         {
           label: "HRBP",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-hrbp", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=9fa3c4a5dcc24a1da11ece562921c7c5", visible: true },
             { id: "hrbp-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRBP_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
@@ -1795,6 +1804,7 @@
         {
           label: "HRS",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-hrs", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=54bbc1becb764181b981021e4f5bcc99", visible: true },
             { id: "hrs-project-template-1", label: "Project Template 1", preload: false, embedSrc: "INSERT_HRS_PROJECT_TEMPLATE_1_EMBED_LINK_HERE", visible: false },
@@ -1813,6 +1823,7 @@
         {
           label: "HRSS",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-hrss", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=c10a615ed1464de49c96d275592e908d", visible: true },
             { id: "hrsss specialists training plan kayle", label: "HRSS Specialists Training Plan Kayle", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=989958f443b1469ebc356286b32263dc" },
@@ -1833,6 +1844,7 @@
         {
           label: "Labor Relations",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-labor-relations", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=3b119c94e2a54f4585a838bf6e4bce00", visible: true },
             { id: "form 185.2 project plan", label: "Form 185.2 Project Plan", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=9185a65e98384b469d5f88cc765c3b55" },
@@ -1852,6 +1864,7 @@
         {
           label: "Talent Acquisition",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-talent-acquisition", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=6971c2f6cbd64b4390af95b58670c485", visible: true },
             { id: "candidate assessment process", label: "Candidate Assessment Process", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=b92ed59874604dea8f2b0215a258d528" },
@@ -1871,6 +1884,7 @@
         {
           label: "Talent Development",
           openByDefault: false,
+          embed: false,
           projects: [
             { id: "short-term-projects-talent-development", label: "Short-Term Projects", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=00df3436d89e46f8be081df151c0b3a5", visible: true },
             { id: "competency configuration / rollout plan", label: "Competency Configuration / Rollout Plans", preload: false, embedSrc: "https://app.smartsheet.com/b/publish?EQBCT=a32b2110d3d5400dac1760825bfa6281" },
@@ -2678,38 +2692,43 @@
       });
     }
 
-    function isBenefitsProjectGroup(group) {
-      return Boolean(group) && String(group.label || "").trim().toLowerCase() === "benefits";
+    /*
+      Embedding is controlled once per department.
+      Every project and archive project in the department follows group.embed.
+    */
+    function shouldEmbedProject(project, group) {
+      return Boolean(group && group.embed === true);
     }
 
-    /* Only Benefits projects are embedded as portal iframe routes. */
+    /* Collect every visible project from departments with embed: true. */
     function getAllProjects() {
       const projects = [];
 
-      getAllProjectGroups()
-        .filter(isBenefitsProjectGroup)
-        .forEach(function(group) {
-          getVisibleProjectItems(group.projects).forEach(function(project) {
-            projects.push(project);
-          });
-
-          (group.sections || []).forEach(function(section) {
-            getVisibleProjectItems(section.projects).forEach(function(project) {
+      getAllProjectGroups().forEach(function(group) {
+        function addEmbeddedProjects(items) {
+          getVisibleProjectItems(items).forEach(function(project) {
+            if (shouldEmbedProject(project, group)) {
               projects.push(project);
-            });
+            }
           });
+        }
 
-          getVisibleProjectItems(group.archiveProjects).forEach(function(project) {
-            projects.push(project);
-          });
+        addEmbeddedProjects(group.projects);
+
+        (group.sections || []).forEach(function(section) {
+          addEmbeddedProjects(section.projects);
         });
+
+        addEmbeddedProjects(group.archiveProjects);
+      });
 
       return projects;
     }
 
     /*
-      Only visible Benefits projects with preload: true are loaded in the background.
-      Projects with preload: false still open normally when selected.
+      Only visible projects in departments with embed: true and preload: true
+      are loaded in the background. Embedded projects with preload: false load
+      when selected. Projects in departments with embed: false are normal links.
     */
     function getPreloadableProjects() {
       return getAllProjects().filter(function(project) {
@@ -2895,7 +2914,7 @@
     function createProjectLink(project, groupIndex, archiveProject) {
       const projectLink = document.createElement("a");
       const projectGroup = getAllProjectGroups()[groupIndex];
-      const shouldEmbedInPortal = isBenefitsProjectGroup(projectGroup);
+      const shouldEmbedInPortal = shouldEmbedProject(project, projectGroup);
 
       projectLink.className = archiveProject
         ? "project-view-link archive-project-link"
